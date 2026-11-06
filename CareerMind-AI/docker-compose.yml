@@ -1,0 +1,114 @@
+version: "3.8"
+
+services:
+  # ============================================================================
+  # 1. FastAPI Backend Service
+  # ============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: careermind-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://careermind_user:careermind_secure_password@postgres:5432/careermind_db
+      - REDIS_URL=redis://redis:6379/0
+      - CHROMA_PERSIST_DIRECTORY=/app/knowledge_base/embeddings/chroma
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - ./ml_models:/app/ml_models
+      - ./knowledge_base:/app/knowledge_base
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - careermind-network
+
+  # ============================================================================
+  # 2. React Frontend Service
+  # ============================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: careermind-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api/v1
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - careermind-network
+
+  # ============================================================================
+  # 3. PostgreSQL Database
+  # ============================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: careermind-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: careermind_user
+      POSTGRES_PASSWORD: careermind_secure_password
+      POSTGRES_DB: careermind_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U careermind_user -d careermind_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - careermind-network
+
+  # ============================================================================
+  # 4. Redis Cache & Broker
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: careermind-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - careermind-network
+
+  # ============================================================================
+  # 5. Chroma Vector Database
+  # ============================================================================
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: careermind-chromadb
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma-data:/chroma/chroma
+    networks:
+      - careermind-network
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  chroma-data:
+    driver: local
+
+networks:
+  careermind-network:
+    driver: bridge
