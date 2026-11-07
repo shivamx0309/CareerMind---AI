@@ -4,6 +4,7 @@ import pymupdf
 
 from resume_engine.file_validator import (
     validate_pdf_file,
+    validate_file_id,
     MAX_FILE_SIZE,
 )
 
@@ -128,3 +129,58 @@ def test_pdf_exactly_at_maximum_size():
     )
 
     assert result == 1
+
+
+# --- validate_file_id Tests ---
+
+def test_validate_file_id_valid_lowercase():
+    valid_id = "2ff5dbac5b1e47e8ab7452c92e3839f3"
+    result = validate_file_id(valid_id)
+    assert result == valid_id
+
+
+def test_validate_file_id_valid_uppercase_normalized():
+    upper_id = "2FF5DBAC5B1E47E8AB7452C92E3839F3"
+    result = validate_file_id(upper_id)
+    assert result == upper_id.lower()
+
+
+def test_validate_file_id_with_whitespace():
+    raw_id = "  2ff5dbac5b1e47e8ab7452c92e3839f3  "
+    result = validate_file_id(raw_id)
+    assert result == "2ff5dbac5b1e47e8ab7452c92e3839f3"
+
+
+def test_validate_file_id_invalid_length():
+    with pytest.raises(ValueError, match="32-character"):
+        validate_file_id("2ff5dbac")
+
+    with pytest.raises(ValueError, match="32-character"):
+        validate_file_id("2ff5dbac5b1e47e8ab7452c92e3839f30000")
+
+
+def test_validate_file_id_non_hex_characters():
+    with pytest.raises(ValueError, match="32-character"):
+        validate_file_id("2ff5dbac5b1e47e8ab7452c92e3839zz")
+
+
+def test_validate_file_id_with_hyphens():
+    with pytest.raises(ValueError, match="32-character"):
+        validate_file_id("2ff5dbac-5b1e-47e8-ab74-52c92e3839f3")
+
+
+def test_validate_file_id_empty_or_none():
+    with pytest.raises(ValueError, match="missing or invalid"):
+        validate_file_id("")
+
+    with pytest.raises(ValueError, match="missing or invalid"):
+        validate_file_id(None)
+
+
+def test_validate_file_id_path_traversal():
+    with pytest.raises(ValueError, match="32-character"):
+        validate_file_id("../../../../etc/passwd")
+
+    with pytest.raises(ValueError, match="32-character"):
+        validate_file_id("..\\..\\uploads\\malicious.pdf")
+

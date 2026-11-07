@@ -1,4 +1,4 @@
-
+import { lazy, Suspense } from 'react'
 import {
   BrowserRouter,
   Routes,
@@ -8,7 +8,18 @@ import {
 import { Sparkles, ArrowLeft } from 'lucide-react'
 
 import DashboardLayout from './layouts/DashboardLayout'
-import Dashboard from './pages/Dashboard'
+
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const ResumeAnalyzer = lazy(() => import('./pages/ResumeAnalyzer'))
+const JobMatcher = lazy(() => import('./pages/JobMatcher'))
+
+function PageLoader() {
+  return (
+    <div className="flex min-h-[300px] w-full items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" />
+    </div>
+  )
+}
 
 function PlaceholderPage({ title }) {
   return (
@@ -33,16 +44,31 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<DashboardLayout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
 
           <Route
             path="/resume"
-            element={<PlaceholderPage title="Resume Analyzer" />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <ResumeAnalyzer />
+              </Suspense>
+            }
           />
 
           <Route
             path="/jobs"
-            element={<PlaceholderPage title="Job Matcher" />}
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <JobMatcher />
+              </Suspense>
+            }
           />
 
           <Route
