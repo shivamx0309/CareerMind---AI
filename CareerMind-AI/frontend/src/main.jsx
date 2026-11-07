@@ -6,11 +6,14 @@ import './index.css'
 import './App.css'
 import App from './App.jsx'
 import { ThemeProvider } from './context/ThemeContext.jsx'
+import { CandidateProvider } from './context/CandidateContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-      <App />
+      <CandidateProvider>
+        <App />
+      </CandidateProvider>
     </ThemeProvider>
   </StrictMode>,
 )

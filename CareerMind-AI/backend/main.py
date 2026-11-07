@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 
 from api.v1.endpoints.resume import router as resume_router
+from api.v1.endpoints.jobs import router as jobs_router
 
 
 app = FastAPI(
@@ -19,6 +20,13 @@ app.include_router(
     resume_router,
     prefix="/api/v1",
     tags=["Resume Intelligence"],
+)
+
+# Register Job Description Matching API
+app.include_router(
+    jobs_router,
+    prefix="/api/v1",
+    tags=["Job Matching"],
 )
 
 

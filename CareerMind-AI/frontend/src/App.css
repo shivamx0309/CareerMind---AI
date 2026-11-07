@@ -61,15 +61,7 @@
    2. Sidebar Navigation
    -------------------------------------------------------------------------- */
 .sidebar-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(5, 7, 15, 0.75);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  z-index: 99;
-  border: none;
-  cursor: pointer;
-  animation: fadeIn 0.25s ease-out;
+  display: none !important;
 }
 
 .sidebar {
@@ -331,7 +323,7 @@
 }
 
 .mobile-menu-button {
-  display: none;
+  display: none !important;
 }
 
 .topbar-greeting {
@@ -1028,6 +1020,19 @@
 
 /* Tablet / Mobile Drawer (<= 768px) */
 @media (max-width: 768px) {
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 7, 15, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 99;
+    border: none;
+    cursor: pointer;
+    animation: fadeIn 0.25s ease-out;
+  }
+
   .sidebar {
     position: fixed;
     top: 0;
@@ -1053,7 +1058,7 @@
   }
 
   .mobile-menu-button {
-    display: flex;
+    display: flex !important;
   }
 
   .topbar {

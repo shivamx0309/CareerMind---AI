@@ -43,7 +43,7 @@ export default function Sidebar({
         <>
             {mobileOpen && (
                 <button
-                    className="sidebar-overlay"
+                    className="sidebar-overlay md:hidden"
                     onClick={() => setMobileOpen(false)}
                     aria-label="Close navigation"
                 />

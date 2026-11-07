@@ -17,7 +17,7 @@ export default function Topbar({ onMenuClick }) {
         <header className="topbar">
             <div className="topbar-left">
                 <button
-                    className="icon-button mobile-menu-button"
+                    className="icon-button mobile-menu-button md:hidden"
                     onClick={onMenuClick}
                     aria-label="Open navigation"
                 >
