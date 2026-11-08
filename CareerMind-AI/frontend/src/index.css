@@ -12,54 +12,60 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #090b16;
-  --bg-secondary: #101426;
-  --surface: rgba(23, 28, 49, 0.75);
-  --surface-solid: #171c31;
-  --surface-hover: rgba(45, 51, 79, 0.7);
+  --bg: #0d0a1a;
+  --bg-secondary: #140f28;
+  --surface: rgba(26, 20, 51, 0.82);
+  --surface-solid: #191333;
+  --surface-hover: rgba(52, 41, 98, 0.7);
 
-  --text-primary: #f4f5ff;
-  --text-secondary: #a0a8c0;
-  --text-muted: #727c98;
+  --text-primary: #f5f3ff;
+  --text-secondary: #c4b5fd;
+  --text-muted: #8b82a8;
 
-  --border: rgba(151, 164, 205, 0.14);
+  --border: rgba(167, 139, 250, 0.18);
 
-  --accent: #9474ff;
-  --accent-secondary: #48b8ff;
-  --accent-soft: rgba(148, 116, 255, 0.14);
+  --primary-purple: #8b5cf6;
+  --secondary-violet: #a78bfa;
+  --accent-lavender: #c4b5fd;
+  --accent: #8b5cf6;
+  --accent-secondary: #a78bfa;
+  --accent-soft: rgba(139, 92, 246, 0.16);
 
-  --success: #35d6a0;
-  --warning: #f5bb65;
+  --success: #22c55e;
+  --warning: #f59e0b;
 
-  --shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
-  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.2);
+  --shadow: 0 15px 50px rgba(0, 0, 0, 0.35);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.25);
   --glass-blur: 20px;
 }
 
 :root[data-theme="light"] {
   color-scheme: light;
 
-  --bg: #f6f7fc;
-  --bg-secondary: #eef0fa;
-  --surface: rgba(255, 255, 255, 0.85);
+  --bg: #faf9ff;
+  --bg-secondary: #f3f0ff;
+  --surface: rgba(255, 255, 255, 0.92);
   --surface-solid: #ffffff;
-  --surface-hover: #f0efff;
+  --surface-hover: #f5f3ff;
 
-  --text-primary: #191b32;
-  --text-secondary: #626985;
-  --text-muted: #9299ad;
+  --text-primary: #17172e;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
 
-  --border: rgba(63, 72, 112, 0.12);
+  --border: rgba(109, 40, 217, 0.12);
 
-  --accent: #7654e8;
-  --accent-secondary: #258fe0;
-  --accent-soft: rgba(118, 84, 232, 0.1);
+  --primary-purple: #6d28d9;
+  --secondary-violet: #8b5cf6;
+  --accent-lavender: #c4b5fd;
+  --accent: #6d28d9;
+  --accent-secondary: #8b5cf6;
+  --accent-soft: rgba(109, 40, 217, 0.08);
 
-  --success: #119b70;
-  --warning: #c78324;
+  --success: #22c55e;
+  --warning: #f59e0b;
 
-  --shadow: 0 15px 45px rgba(39, 45, 86, 0.08);
-  --shadow-sm: 0 4px 14px rgba(39, 45, 86, 0.04);
+  --shadow: 0 15px 45px rgba(109, 40, 217, 0.07);
+  --shadow-sm: 0 4px 14px rgba(109, 40, 217, 0.04);
   --glass-blur: 20px;
 }
 
@@ -135,16 +141,132 @@ a {
   border-radius: 20px;
 }
 
-.gradient-text {
-  background: linear-gradient(110deg,
-      var(--accent),
-      var(--accent-secondary));
+.gradient-text,
+.purple-gradient-text {
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 50%, #c4b5fd 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
+[data-theme="dark"] .purple-gradient-text {
+  background: linear-gradient(135deg, #a78bfa 0%, #c4b5fd 50%, #e9d5ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.purple-gradient-btn {
+  background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(109, 40, 217, 0.28);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.purple-gradient-btn:hover {
+  background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+  box-shadow: 0 6px 24px rgba(109, 40, 217, 0.38);
+  transform: translateY(-1px);
+}
+
+.purple-gradient-btn:active {
+  transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   Mindy Orbital System Animations
+   -------------------------------------------------------------------------- */
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-counter-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes pulse-ring {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.3), inset 0 0 20px rgba(196, 181, 253, 0.2);
+  }
+  50% {
+    opacity: 0.95;
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.5), inset 0 0 30px rgba(196, 181, 253, 0.35);
+  }
+}
+
+.animate-orbit {
+  animation: orbit-spin 12s linear infinite;
+}
+
+.animate-counter-orbit {
+  animation: orbit-counter-spin 12s linear infinite;
+}
+
+.animate-float-gentle {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 4s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   Featured Card CTA Button (Guaranteed high contrast in Light & Dark modes)
+   -------------------------------------------------------------------------- */
+.featured-card-cta {
+  background-color: #ffffff !important;
+  color: #4c1d95 !important; /* Deep Violet / Purple */
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.featured-card-cta span,
+.featured-card-cta svg {
+  color: #4c1d95 !important;
+  stroke: #4c1d95 !important;
+}
+
+.featured-card-cta:hover {
+  background-color: #f5f3ff !important;
+  color: #3b0764 !important;
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28) !important;
+}
+
+.featured-card-cta:hover span,
+.featured-card-cta:hover svg {
+  color: #3b0764 !important;
+  stroke: #3b0764 !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .animate-orbit,
+  .animate-counter-orbit,
+  .animate-float-gentle,
+  .animate-pulse-ring {
+    animation: none !important;
+  }
 
   *,
   *::before,

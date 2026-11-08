@@ -13,12 +13,13 @@ import {
     X,
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import MindyMascot from '../common/MindyMascot'
 
 const navigation = [
     {
         title: 'OVERVIEW',
         items: [
-            { label: 'Dashboard', path: '/', icon: LayoutDashboard },
+            { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
         ],
     },
     {
@@ -55,8 +56,8 @@ export default function Sidebar({
                 className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}
             >
                 <div className="sidebar-brand">
-                    <div className="brand-icon">
-                        <Sparkles size={23} />
+                    <div className="brand-icon relative overflow-hidden bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6]">
+                        <MindyMascot expression="chatbot" size="xs" alt="CareerMind Logo" className="scale-125 translate-y-0.5" />
                     </div>
 
                     {!collapsed && (
@@ -88,7 +89,7 @@ export default function Sidebar({
                                 return (
                                     <NavLink
                                         to={item.path}
-                                        end={item.path === '/'}
+                                        end={item.path === '/dashboard'}
                                         key={item.path}
                                         onClick={() => setMobileOpen(false)}
                                         className={({ isActive }) =>

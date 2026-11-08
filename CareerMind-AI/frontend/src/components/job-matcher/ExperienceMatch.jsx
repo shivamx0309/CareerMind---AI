@@ -93,60 +93,60 @@ export default function ExperienceMatch({ experienceMatch }) {
                 </div>
             </div>
 
-            {/* Metrics Grid */}
+            {/* Tenure Comparison Cards */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {/* Required Professional Tenure */}
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]/60 p-4">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] block mb-1">
-                        Required Experience
+                {/* Expected Tenure */}
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]/60 p-4 space-y-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] block">
+                        Target Requirement
                     </span>
-                    <div className="text-xl font-bold text-[var(--text-primary)]">
-                        {required_years !== null ? `${required_years} years` : 'Not Specified'}
+                    <div className="text-2xl font-black text-[var(--text-primary)]">
+                        {required_years != null ? `${required_years}+ yrs` : 'Not Specified'}
                     </div>
-                    {required_level && (
-                        <span className="text-xs text-[var(--text-secondary)] mt-0.5 block">
-                            Level: {required_level}
-                        </span>
-                    )}
-                </div>
-
-                {/* Verified Candidate Professional Tenure */}
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]/60 p-4">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] block mb-1">
-                        Verified Employment
-                    </span>
-                    <div className="text-xl font-bold text-[var(--text-primary)]">
-                        {professional_years > 0 ? `${professional_years.toFixed(1)} years` : '0.0 years'}
-                    </div>
-                    <span className="text-[11px] text-[var(--text-muted)] mt-0.5 block">
-                        Full-time / regular employment
+                    <span className="text-xs text-[var(--text-secondary)] block">
+                        Level: <span className="capitalize font-medium text-[var(--text-primary)]">{required_level || 'General'}</span>
                     </span>
                 </div>
 
-                {/* Separate Internship Tenure */}
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]/60 p-4">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] block mb-1">
-                        Internship Duration
+                {/* Professional Verified Tenure */}
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]/60 p-4 space-y-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] block">
+                        Professional Employment
                     </span>
-                    <div className="text-xl font-bold text-[var(--accent)]">
-                        {internship_years > 0 ? `${internship_years.toFixed(1)} years` : 'None Recorded'}
+                    <div className="text-2xl font-black text-emerald-400">
+                        {professional_years || 0.0} yrs
                     </div>
-                    <span className="text-[11px] text-[var(--text-muted)] mt-0.5 block">
-                        Assessed as supplemental portfolio
+                    <span className="text-xs text-[var(--text-secondary)] block">
+                        Non-overlapping employment tenure
+                    </span>
+                </div>
+
+                {/* Internship Duration (Separated) */}
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-solid)]/60 p-4 space-y-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] block">
+                        Internship Training
+                    </span>
+                    <div className="text-2xl font-black text-indigo-400">
+                        {internship_years || 0.0} yrs
+                    </div>
+                    <span className="text-xs text-[var(--text-secondary)] block">
+                        {internship_entries.length} internship role(s) verified
                     </span>
                 </div>
             </div>
 
-            {/* Narrative Explanation */}
-            <div className="rounded-xl bg-[var(--surface-hover)]/40 p-4 text-xs text-[var(--text-secondary)] leading-relaxed">
-                <strong className="font-semibold text-[var(--text-primary)] block mb-1">
-                    Assessment Summary:
-                </strong>
-                {explanation}
-            </div>
+            {/* Explanation / Assessment Narrative */}
+            {explanation && (
+                <div className="rounded-xl bg-[var(--surface-hover)]/40 p-4 text-xs text-[var(--text-secondary)] leading-relaxed">
+                    <strong className="font-semibold text-[var(--text-primary)] block mb-1">
+                        Tenure Verification Analysis:
+                    </strong>
+                    {explanation}
+                </div>
+            )}
 
-            {/* Strict Distinction Assurance */}
-            <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-3 text-xs text-indigo-200">
+            {/* Ground-Truth Integrity Notice */}
+            <div className="rounded-xl border border-indigo-500/20 bg-indigo-500/5 p-3.5 text-xs text-indigo-200/90 leading-relaxed">
                 <span className="font-semibold block mb-0.5">
                     Defensible Evidence Standard:
                 </span>
@@ -163,14 +163,17 @@ export default function ExperienceMatch({ experienceMatch }) {
                             <span>Relevant Work Responsibilities ({relevant_responsibilities.length})</span>
                         </span>
                         <ul className="space-y-1.5">
-                            {relevant_responsibilities.map((resp, idx) => (
-                                <li
-                                    key={idx}
-                                    className="rounded-lg border border-[var(--border)] bg-[var(--surface-solid)]/70 p-2.5 text-xs text-[var(--text-secondary)] leading-relaxed"
-                                >
-                                    {resp}
-                                </li>
-                            ))}
+                            {relevant_responsibilities.map((resp, idx) => {
+                                const text = typeof resp === 'string' ? resp : (resp?.text || resp?.responsibility || resp?.name || JSON.stringify(resp))
+                                return (
+                                    <li
+                                        key={idx}
+                                        className="rounded-lg border border-[var(--border)] bg-[var(--surface-solid)]/70 p-2.5 text-xs text-[var(--text-secondary)] leading-relaxed"
+                                    >
+                                        {text}
+                                    </li>
+                                )
+                            })}
                         </ul>
                     </div>
                 )}
@@ -195,9 +198,10 @@ export default function ExperienceMatch({ experienceMatch }) {
                                     )
                                 }
 
-                                const name = proj.project_name || `Project ${idx + 1}`
-                                const techs = Array.isArray(proj.technologies) ? proj.technologies : []
-                                const relevantSkills = Array.isArray(proj.relevant_skills) ? proj.relevant_skills : []
+                                const name = typeof proj?.project_name === 'string' ? proj.project_name : `Project ${idx + 1}`
+                                const techs = Array.isArray(proj?.technologies) ? proj.technologies : []
+                                const relevantSkills = Array.isArray(proj?.relevant_skills) ? proj.relevant_skills : []
+                                const relevance = typeof proj?.relevance === 'string' ? proj.relevance : (proj?.relevance ? JSON.stringify(proj.relevance) : null)
 
                                 return (
                                     <li
@@ -213,29 +217,35 @@ export default function ExperienceMatch({ experienceMatch }) {
                                             </span>
                                         </div>
 
-                                        {proj.relevance && (
+                                        {relevance && (
                                             <p className="text-[11px] text-[var(--text-muted)]">
-                                                {proj.relevance}
+                                                {relevance}
                                             </p>
                                         )}
 
                                         {relevantSkills.length > 0 && (
                                             <div className="flex flex-wrap items-center gap-1 text-[11px] pt-0.5">
                                                 <span className="text-[var(--text-muted)]">Skills:</span>
-                                                {relevantSkills.map((sk, skIdx) => (
-                                                    <span
-                                                        key={skIdx}
-                                                        className="rounded bg-indigo-500/15 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-indigo-300"
-                                                    >
-                                                        {sk}
-                                                    </span>
-                                                ))}
+                                                {relevantSkills.map((sk, skIdx) => {
+                                                    const skText = typeof sk === 'string' ? sk : (sk?.skill || sk?.name || JSON.stringify(sk))
+                                                    return (
+                                                        <span
+                                                            key={skIdx}
+                                                            className="rounded bg-indigo-500/15 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-indigo-300"
+                                                        >
+                                                            {skText}
+                                                        </span>
+                                                    )
+                                                })}
                                             </div>
                                         )}
 
                                         {techs.length > 0 && (
-                                            <div className="text-[10px] text-[var(--text-muted)] truncate" title={techs.join(', ')}>
-                                                Stack: {techs.join(', ')}
+                                            <div
+                                                className="text-[10px] text-[var(--text-muted)] truncate"
+                                                title={techs.map((t) => (typeof t === 'string' ? t : (t?.name || JSON.stringify(t)))).join(', ')}
+                                            >
+                                                Stack: {techs.map((t) => (typeof t === 'string' ? t : (t?.name || JSON.stringify(t)))).join(', ')}
                                             </div>
                                         )}
                                     </li>
@@ -254,22 +264,26 @@ export default function ExperienceMatch({ experienceMatch }) {
                         <span>Identified Internship Experience ({internship_entries.length})</span>
                     </span>
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        {internship_entries.map((intern, idx) => (
-                            <div
-                                key={idx}
-                                className="rounded-lg border border-[var(--border)] bg-[var(--surface-solid)]/70 p-2.5 text-xs text-[var(--text-secondary)] flex items-center justify-between"
-                            >
-                                <div>
-                                    <strong className="text-[var(--text-primary)] block">{intern.job_title}</strong>
-                                    {intern.company && <span className="text-[11px] text-[var(--text-muted)]">{intern.company}</span>}
+                        {internship_entries.map((intern, idx) => {
+                            const title = typeof intern?.job_title === 'string' ? intern.job_title : (intern?.job_title?.title || 'Intern')
+                            const company = typeof intern?.company === 'string' ? intern.company : (intern?.company?.name || null)
+                            return (
+                                <div
+                                    key={idx}
+                                    className="rounded-lg border border-[var(--border)] bg-[var(--surface-solid)]/70 p-2.5 text-xs text-[var(--text-secondary)] flex items-center justify-between"
+                                >
+                                    <div>
+                                        <strong className="text-[var(--text-primary)] block">{title}</strong>
+                                        {company && <span className="text-[11px] text-[var(--text-muted)]">{company}</span>}
+                                    </div>
+                                    {intern?.duration_months && (
+                                        <span className="rounded bg-[var(--surface-hover)] px-2 py-0.5 text-[10px] font-mono text-[var(--accent)] font-semibold">
+                                            {intern.duration_months} mos
+                                        </span>
+                                    )}
                                 </div>
-                                {intern.duration_months && (
-                                    <span className="rounded bg-[var(--surface-hover)] px-2 py-0.5 text-[10px] font-mono text-[var(--accent)] font-semibold">
-                                        {intern.duration_months} mos
-                                    </span>
-                                )}
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 </div>
             )}
@@ -282,9 +296,10 @@ export default function ExperienceMatch({ experienceMatch }) {
                         <span>Data Completeness Notes:</span>
                     </span>
                     <ul className="list-disc list-inside space-y-0.5 text-amber-300/80">
-                        {missing_information.map((item, idx) => (
-                            <li key={idx}>{item}</li>
-                        ))}
+                        {missing_information.map((item, idx) => {
+                            const note = typeof item === 'string' ? item : (item?.note || item?.text || JSON.stringify(item))
+                            return <li key={idx}>{note}</li>
+                        })}
                     </ul>
                 </div>
             )}

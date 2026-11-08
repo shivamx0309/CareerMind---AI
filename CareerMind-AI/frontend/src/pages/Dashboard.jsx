@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
@@ -12,7 +11,13 @@ import {
     CircleCheck,
     Upload,
     MessageSquare,
+    UserCheck,
+    GraduationCap,
+    MapPin,
+    Briefcase,
+    Edit3,
 } from 'lucide-react'
+import { useCareerProfile } from '../context/CareerProfileContext'
 
 const stats = [
     {
@@ -45,7 +50,7 @@ const stats = [
     },
 ]
 
-const actions = [
+const baseActions = [
     {
         title: 'Analyze Resume',
         description: 'Extract skills and experience from your resume.',
@@ -57,6 +62,12 @@ const actions = [
         description: 'Compare your profile with job requirements.',
         icon: BriefcaseBusiness,
         path: '/jobs',
+    },
+    {
+        title: 'Edit Career Profile',
+        description: 'Update your career status, education, and target preferences.',
+        icon: UserCheck,
+        path: '/onboarding?edit=true',
     },
     {
         title: 'Practice Interview',
@@ -85,9 +96,16 @@ const activities = [
 ]
 
 export default function Dashboard() {
+    const { profile } = useCareerProfile()
+
+    const candidateName = profile?.full_name || 'Candidate'
+    const targetRole = profile?.primary_target_role || 'Target Role'
+    const careerStatus = profile?.career_status || 'Career Explorer'
+
     return (
         <div className="dashboard-page">
 
+            {/* Personalized Welcome Banner */}
             <motion.section
                 className="welcome-banner glass-card"
                 initial={{ opacity: 0, y: 18 }}
@@ -97,25 +115,33 @@ export default function Dashboard() {
                 <div className="welcome-content">
                     <div className="welcome-tag">
                         <Sparkles size={14} />
-                        AI CAREER INTELLIGENCE
+                        <span>{careerStatus.toUpperCase()} &bull; CAREER PROFILE ACTIVE</span>
                     </div>
 
                     <h1>
-                        Your career journey
+                        Welcome back,
                         <br />
-                        starts <span className="gradient-text">here.</span>
+                        <span className="gradient-text">{candidateName}.</span>
                     </h1>
 
                     <p>
-                        Analyze your skills, discover opportunities,
-                        and build a smarter career path with AI.
+                        Targeting <strong className="text-[var(--text-primary)]">{targetRole}</strong> &bull; {profile?.preferred_work_mode || 'Remote'} &bull; {profile?.degree || 'Technical Degree'}
                     </p>
 
-                    <Link to="/resume" className="primary-button">
-                        <FileSearch size={18} />
-                        Analyze my resume
-                        <ArrowUpRight size={17} />
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-3 pt-2">
+                        <Link to="/resume" className="primary-button">
+                            <FileSearch size={18} />
+                            Analyze my resume
+                            <ArrowUpRight size={17} />
+                        </Link>
+                        <Link
+                            to="/onboarding?edit=true"
+                            className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] px-4 py-2.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-all"
+                        >
+                            <Edit3 size={15} className="text-[var(--accent)]" />
+                            <span>Edit Profile</span>
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="welcome-decoration">
@@ -126,6 +152,98 @@ export default function Dashboard() {
                     </div>
                 </div>
             </motion.section>
+
+            {/* Registered Career Profile Overview Card */}
+            {profile && (
+                <section className="dashboard-section">
+                    <div className="glass-card rounded-2xl p-6 border border-[var(--border)] space-y-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border)] pb-3 gap-2">
+                            <div className="flex items-center gap-2">
+                                <UserCheck size={18} className="text-[var(--accent)]" />
+                                <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider">
+                                    Registered Career Profile
+                                </h3>
+                                <span className="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                                    Active &bull; Onboarded
+                                </span>
+                            </div>
+
+                            <Link
+                                to="/onboarding?edit=true"
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent)] hover:underline self-start sm:self-center"
+                            >
+                                <Edit3 size={13} />
+                                <span>Edit Profile Preferences</span>
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                            {/* Target Role & Status */}
+                            <div className="space-y-1 rounded-xl bg-[var(--surface-solid)]/70 border border-[var(--border)] p-3.5">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1">
+                                    <Target size={11} className="text-[var(--accent)]" />
+                                    <span>Target Role</span>
+                                </span>
+                                <div className="font-bold text-[var(--text-primary)] text-sm">
+                                    {profile.primary_target_role}
+                                </div>
+                                <span className="text-[11px] text-[var(--text-secondary)] block">
+                                    Status: {profile.career_status}
+                                </span>
+                            </div>
+
+                            {/* Education */}
+                            <div className="space-y-1 rounded-xl bg-[var(--surface-solid)]/70 border border-[var(--border)] p-3.5">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1">
+                                    <GraduationCap size={11} className="text-emerald-400" />
+                                    <span>Highest Education</span>
+                                </span>
+                                <div className="font-bold text-[var(--text-primary)] truncate" title={profile.degree}>
+                                    {profile.degree}
+                                </div>
+                                <span className="text-[11px] text-[var(--text-secondary)] truncate block" title={profile.institution}>
+                                    {profile.institution} &bull; {profile.graduation_year}
+                                </span>
+                            </div>
+
+                            {/* Job Style */}
+                            <div className="space-y-1 rounded-xl bg-[var(--surface-solid)]/70 border border-[var(--border)] p-3.5">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1">
+                                    <Briefcase size={11} className="text-blue-400" />
+                                    <span>Job Preference</span>
+                                </span>
+                                <div className="font-bold text-[var(--text-primary)]">
+                                    {profile.preferred_job_type}
+                                </div>
+                                <span className="text-[11px] text-[var(--text-secondary)] block">
+                                    Mode: {profile.preferred_work_mode}
+                                </span>
+                            </div>
+
+                            {/* Locations */}
+                            <div className="space-y-1 rounded-xl bg-[var(--surface-solid)]/70 border border-[var(--border)] p-3.5">
+                                <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] flex items-center gap-1">
+                                    <MapPin size={11} className="text-amber-400" />
+                                    <span>Preferred Locations</span>
+                                </span>
+                                <div className="font-bold text-[var(--text-primary)] truncate" title={profile.preferred_locations?.join(', ')}>
+                                    {profile.preferred_locations?.join(', ') || 'Anywhere'}
+                                </div>
+                                <span className="text-[11px] text-[var(--text-secondary)] block">
+                                    {profile.preferred_locations?.length || 0} location(s)
+                                </span>
+                            </div>
+                        </div>
+
+                        {profile.career_objective && (
+                            <div className="rounded-xl bg-[var(--surface-hover)]/40 p-3 text-xs text-[var(--text-secondary)] leading-relaxed">
+                                <strong className="font-semibold text-[var(--text-primary)] mr-1">Objective:</strong>
+                                <span>{profile.career_objective}</span>
+                            </div>
+                        )}
+                    </div>
+                </section>
+            )}
 
             <section className="dashboard-section">
                 <div className="section-heading">
@@ -174,7 +292,7 @@ export default function Dashboard() {
                 </div>
 
                 <div className="actions-grid">
-                    {actions.map((action) => {
+                    {baseActions.map((action) => {
                         const Icon = action.icon
 
                         return (
