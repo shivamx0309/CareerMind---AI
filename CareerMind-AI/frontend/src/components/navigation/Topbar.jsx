@@ -1,17 +1,22 @@
-
 import {
     Menu,
     Sun,
     Moon,
     Search,
     Bell,
-    ChevronDown,
+    UserCheck,
 } from 'lucide-react'
-
+import { Link } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
+import { useCareerProfile } from '../../context/CareerProfileContext'
 
 export default function Topbar({ onMenuClick }) {
     const { theme, toggleTheme } = useTheme()
+    const { profile } = useCareerProfile()
+
+    const displayName = profile?.full_name || 'Career Explorer'
+    const displayRole = profile?.primary_target_role || 'Workspace User'
+    const avatarLetter = (displayName.charAt(0) || 'U').toUpperCase()
 
     return (
         <header className="topbar">
@@ -60,16 +65,20 @@ export default function Topbar({ onMenuClick }) {
 
                 <div className="topbar-divider" />
 
-                <button className="profile-button">
-                    <div className="profile-avatar">S</div>
+                <Link
+                    to="/onboarding?edit=true"
+                    className="profile-button text-left"
+                    title="Click to edit your career profile"
+                >
+                    <div className="profile-avatar">{avatarLetter}</div>
 
                     <div className="profile-info">
-                        <strong>Shivam</strong>
-                        <span>Career Explorer</span>
+                        <strong>{displayName}</strong>
+                        <span className="truncate max-w-[120px]">{displayRole}</span>
                     </div>
 
-                    <ChevronDown size={16} />
-                </button>
+                    <UserCheck size={14} className="text-[var(--text-muted)] ml-1" />
+                </Link>
             </div>
         </header>
     )

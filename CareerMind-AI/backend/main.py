@@ -3,6 +3,7 @@ from fastapi import FastAPI
 
 from api.v1.endpoints.resume import router as resume_router
 from api.v1.endpoints.jobs import router as jobs_router
+from api.v1.endpoints.onboarding import router as onboarding_router
 
 
 app = FastAPI(
@@ -14,6 +15,13 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
+# Register Career Profile Onboarding API
+app.include_router(
+    onboarding_router,
+    prefix="/api/v1",
+    tags=["Onboarding & Career Profile"],
+)
 
 # Register Resume Intelligence API
 app.include_router(

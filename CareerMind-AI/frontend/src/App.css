@@ -58,6 +58,74 @@
 }
 
 /* --------------------------------------------------------------------------
+   1.1 Onboarding Full-Page Scroll Container
+   -------------------------------------------------------------------------- */
+.onboarding-page-container {
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.onboarding-page-container::-webkit-scrollbar {
+  width: 7px;
+}
+
+.onboarding-page-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.onboarding-page-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.onboarding-page-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+body:has(.onboarding-page-container),
+body:has(.landing-page-container) {
+  overflow-y: auto !important;
+}
+
+/* --------------------------------------------------------------------------
+   1.2 Public Landing Website Container
+   -------------------------------------------------------------------------- */
+.landing-page-container {
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.landing-page-container::-webkit-scrollbar {
+  width: 7px;
+}
+
+.landing-page-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.landing-page-container::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.landing-page-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
    2. Sidebar Navigation
    -------------------------------------------------------------------------- */
 .sidebar-overlay {

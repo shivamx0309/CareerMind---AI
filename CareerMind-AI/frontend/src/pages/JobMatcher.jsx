@@ -23,6 +23,7 @@ import MissingSkills from '../components/job-matcher/MissingSkills'
 import ExperienceMatch from '../components/job-matcher/ExperienceMatch'
 import EducationMatch from '../components/job-matcher/EducationMatch'
 import Recommendations from '../components/job-matcher/Recommendations'
+import ErrorBoundary from '../components/common/ErrorBoundary'
 
 export default function JobMatcher() {
     const { fileId, hasResume } = useCandidate()
@@ -229,58 +230,74 @@ export default function JobMatcher() {
             {matchResult && !isLoading && (
                 <div className="space-y-8 animate-fadeIn">
                     {/* Overall Match Score Card */}
-                    <MatchScoreCard
-                        matchScore={matchResult.match_score}
-                        overallScore={matchResult.overall_score}
-                        matchClassification={matchResult.match_classification}
-                        targetTitle={matchResult.parsed_job?.job_title}
-                        targetCompany={matchResult.parsed_job?.company}
-                    />
+                    <ErrorBoundary title="Match Score Summary">
+                        <MatchScoreCard
+                            matchScore={matchResult.match_score}
+                            overallScore={matchResult.overall_score}
+                            matchClassification={matchResult.match_classification}
+                            targetTitle={matchResult.parsed_job?.job_title}
+                            targetCompany={matchResult.parsed_job?.company}
+                        />
+                    </ErrorBoundary>
 
                     {/* Multi-Dimensional Score Breakdown */}
                     {matchResult.match_score?.components && (
-                        <ScoreBreakdown
-                            components={matchResult.match_score.components}
-                        />
+                        <ErrorBoundary title="Score Breakdown">
+                            <ScoreBreakdown
+                                components={matchResult.match_score.components}
+                            />
+                        </ErrorBoundary>
                     )}
 
                     {/* Matched Skills Overview */}
-                    <MatchedSkills
-                        matchedSkills={matchResult.matched_skills || []}
-                    />
+                    <ErrorBoundary title="Matched Skills">
+                        <MatchedSkills
+                            matchedSkills={matchResult.matched_skills || []}
+                        />
+                    </ErrorBoundary>
 
                     {/* Semantically Related Skills (separated) */}
                     {matchResult.related_skills && matchResult.related_skills.length > 0 && (
-                        <RelatedSkills
-                            relatedSkills={matchResult.related_skills}
-                        />
+                        <ErrorBoundary title="Related Skills">
+                            <RelatedSkills
+                                relatedSkills={matchResult.related_skills}
+                            />
+                        </ErrorBoundary>
                     )}
 
                     {/* Identified Skill Gaps */}
-                    <MissingSkills
-                        missingRequired={matchResult.missing_required_skills || []}
-                        missingPreferred={matchResult.missing_preferred_skills || []}
-                    />
+                    <ErrorBoundary title="Missing Skills Assessment">
+                        <MissingSkills
+                            missingRequired={matchResult.missing_required_skills || []}
+                            missingPreferred={matchResult.missing_preferred_skills || []}
+                        />
+                    </ErrorBoundary>
 
                     {/* Experience Relevance & Tenure Assessment */}
                     {matchResult.experience_match && (
-                        <ExperienceMatch
-                            experienceMatch={matchResult.experience_match}
-                        />
+                        <ErrorBoundary title="Experience Assessment">
+                            <ExperienceMatch
+                                experienceMatch={matchResult.experience_match}
+                            />
+                        </ErrorBoundary>
                     )}
 
                     {/* Education Alignment */}
                     {matchResult.education_match && (
-                        <EducationMatch
-                            educationMatch={matchResult.education_match}
-                        />
+                        <ErrorBoundary title="Education Alignment">
+                            <EducationMatch
+                                educationMatch={matchResult.education_match}
+                            />
+                        </ErrorBoundary>
                     )}
 
                     {/* Prioritized Actionable Recommendations */}
                     {matchResult.recommendations && (
-                        <Recommendations
-                            recommendations={matchResult.recommendations}
-                        />
+                        <ErrorBoundary title="Recommendations">
+                            <Recommendations
+                                recommendations={matchResult.recommendations}
+                            />
+                        </ErrorBoundary>
                     )}
                 </div>
             )}
