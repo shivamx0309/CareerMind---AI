@@ -1,9 +1,9 @@
-
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 
 import Sidebar from '../components/navigation/Sidebar'
 import Topbar from '../components/navigation/Topbar'
+import DashboardBottomNav from '../components/navigation/DashboardBottomNav'
 
 export default function DashboardLayout() {
     const [collapsed, setCollapsed] = useState(false)
@@ -11,7 +11,6 @@ export default function DashboardLayout() {
 
     return (
         <div className="dashboard-layout">
-
             <Sidebar
                 collapsed={collapsed}
                 setCollapsed={setCollapsed}
@@ -29,6 +28,7 @@ export default function DashboardLayout() {
                 </main>
             </div>
 
+            <DashboardBottomNav />
         </div>
     )
 }

@@ -81,7 +81,7 @@ def run_tests():
         page.locator("#features .lg\\:col-span-7 h4:has-text('Skill Gap Analysis')").click()
         time.sleep(0.6)
 
-        new_featured_num = page.locator("#features .lg\\:col-span-5 text=Feature 03 of 05")
+        new_featured_num = page.locator("#features .lg\\:col-span-5").get_by_text("Feature 03 of 05")
         assert new_featured_num.is_visible()
         print("[Pass] Swapped: Featured card now shows 'Feature 03 of 05'")
 

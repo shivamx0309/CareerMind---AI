@@ -1,5 +1,4 @@
 import {
-    Menu,
     Sun,
     Moon,
     Search,
@@ -9,6 +8,7 @@ import {
 import { Link } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
 import { useCareerProfile } from '../../context/CareerProfileContext'
+import MindyMascot from '../common/MindyMascot'
 
 export default function Topbar({ onMenuClick }) {
     const { theme, toggleTheme } = useTheme()
@@ -21,13 +21,11 @@ export default function Topbar({ onMenuClick }) {
     return (
         <header className="topbar">
             <div className="topbar-left">
-                <button
-                    className="icon-button mobile-menu-button md:hidden"
-                    onClick={onMenuClick}
-                    aria-label="Open navigation"
-                >
-                    <Menu size={21} />
-                </button>
+                <Link to="/" className="topbar-brand-mobile" title="CareerMind AI Home">
+                    <div className="brand-icon relative overflow-hidden bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] !w-9 !h-9 !min-w-[36px] !rounded-xl">
+                        <MindyMascot expression="chatbot" size="xs" alt="CareerMind Logo" className="scale-125 translate-y-0.5" />
+                    </div>
+                </Link>
 
                 <div className="topbar-greeting">
                     <span>Workspace</span>
