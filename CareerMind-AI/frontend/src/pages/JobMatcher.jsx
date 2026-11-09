@@ -9,6 +9,13 @@ import {
     FileText,
     ShieldCheck,
     Cpu,
+    BarChart3,
+    Code2,
+    Briefcase,
+    GraduationCap,
+    Route,
+    ChevronDown,
+    ChevronUp,
 } from 'lucide-react'
 
 import { useCandidate } from '../context/CandidateContext'
@@ -25,6 +32,34 @@ import EducationMatch from '../components/job-matcher/EducationMatch'
 import Recommendations from '../components/job-matcher/Recommendations'
 import ErrorBoundary from '../components/common/ErrorBoundary'
 
+const JOB_MATCHER_TABS = [
+    {
+        id: 'overview',
+        label: 'Overview',
+        icon: BarChart3,
+    },
+    {
+        id: 'skills',
+        label: 'Skills',
+        icon: Code2,
+    },
+    {
+        id: 'experience',
+        label: 'Experience',
+        icon: Briefcase,
+    },
+    {
+        id: 'education',
+        label: 'Education',
+        icon: GraduationCap,
+    },
+    {
+        id: 'roadmap',
+        label: 'Roadmap',
+        icon: Route,
+    },
+]
+
 export default function JobMatcher() {
     const { fileId, hasResume } = useCandidate()
 
@@ -33,6 +68,7 @@ export default function JobMatcher() {
     const [errorMessage, setErrorMessage] = useState('')
     const [lastSubmission, setLastSubmission] = useState(null)
     const [isFormCollapsed, setIsFormCollapsed] = useState(false)
+    const [activeTab, setActiveTab] = useState('overview')
 
     async function handleRunMatch(formData) {
         if (!fileId) {
@@ -56,6 +92,7 @@ export default function JobMatcher() {
             const response = await matchJob(payload)
             setMatchResult(response)
             setIsFormCollapsed(true)
+            setActiveTab('overview')
         } catch (err) {
             setErrorMessage(
                 err.userMessage ||
@@ -71,24 +108,34 @@ export default function JobMatcher() {
         setMatchResult(null)
         setErrorMessage('')
         setIsFormCollapsed(false)
+        setActiveTab('overview')
+    }
+
+    function handleTabClick(tabId) {
+        setActiveTab(tabId)
+        const dashboardContent = document.querySelector('.dashboard-content')
+        if (dashboardContent) {
+            dashboardContent.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-8 animate-fadeIn">
+        <div className="mx-auto w-full max-w-6xl space-y-6 sm:space-y-8 animate-fadeIn">
             {/* Page Header */}
             <div>
-                <div className="mb-2.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
+                <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
                     <Sparkles size={16} />
                     <span>Explainable Matching Engine</span>
                 </div>
 
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl flex items-center gap-2.5">
-                            <BriefcaseBusiness className="text-[var(--accent)]" size={32} />
+                        <h1 className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl md:text-4xl flex items-center gap-2.5">
+                            <BriefcaseBusiness className="text-[var(--accent)] shrink-0" size={28} />
                             <span>Job Description Matcher</span>
                         </h1>
-                        <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                        <p className="mt-1 text-xs sm:text-sm text-[var(--text-secondary)]">
                             Compare candidate skills, experience tenure, and education credentials against target job postings with explainable scoring.
                         </p>
                     </div>
@@ -175,23 +222,26 @@ export default function JobMatcher() {
 
             {/* State 2: Resume Available -> Show Form */}
             {hasResume && (
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {/* Collapsible toggle if already matched */}
                     {matchResult && (
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                             <button
                                 type="button"
                                 onClick={() => setIsFormCollapsed(!isFormCollapsed)}
-                                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-all"
+                                className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] px-3.5 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+                                aria-expanded={!isFormCollapsed}
+                                aria-controls="job-description-form-section"
                             >
                                 <FileText size={14} className="text-[var(--accent)]" />
-                                <span>{isFormCollapsed ? 'Show Job Description Form' : 'Collapse Form'}</span>
+                                <span>{isFormCollapsed ? 'Show Job Description' : 'Hide Job Description'}</span>
+                                {isFormCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
                             </button>
 
                             <button
                                 type="button"
                                 onClick={handleResetAnalysis}
-                                className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] px-3.5 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] transition-all"
+                                className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] px-3.5 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
                             >
                                 <RotateCcw size={13} />
                                 <span>Match Another Job</span>
@@ -200,11 +250,13 @@ export default function JobMatcher() {
                     )}
 
                     {(!matchResult || !isFormCollapsed) && (
-                        <JobDescriptionForm
-                            onSubmit={handleRunMatch}
-                            isLoading={isLoading}
-                            initialValues={lastSubmission || {}}
-                        />
+                        <div id="job-description-form-section">
+                            <JobDescriptionForm
+                                onSubmit={handleRunMatch}
+                                isLoading={isLoading}
+                                initialValues={lastSubmission || {}}
+                            />
+                        </div>
                     )}
                 </div>
             )}
@@ -228,77 +280,141 @@ export default function JobMatcher() {
 
             {/* State 3: Analysis Results View */}
             {matchResult && !isLoading && (
-                <div className="space-y-8 animate-fadeIn">
-                    {/* Overall Match Score Card */}
-                    <ErrorBoundary title="Match Score Summary">
-                        <MatchScoreCard
-                            matchScore={matchResult.match_score}
-                            overallScore={matchResult.overall_score}
-                            matchClassification={matchResult.match_classification}
-                            targetTitle={matchResult.parsed_job?.job_title}
-                            targetCompany={matchResult.parsed_job?.company}
-                        />
-                    </ErrorBoundary>
+                <div className="space-y-6 sm:space-y-8 animate-fadeIn">
+                    {/* MOBILE-ONLY 5-TAB NAVIGATION (< 450px) */}
+                    <div className="mobile-job-tabs-container">
+                        <div className="mobile-job-tabs-nav" role="tablist" aria-label="Match report sections">
+                            {JOB_MATCHER_TABS.map((tab) => {
+                                const Icon = tab.icon
+                                const isActive = activeTab === tab.id
 
-                    {/* Multi-Dimensional Score Breakdown */}
-                    {matchResult.match_score?.components && (
-                        <ErrorBoundary title="Score Breakdown">
-                            <ScoreBreakdown
-                                components={matchResult.match_score.components}
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        type="button"
+                                        role="tab"
+                                        id={`tab-${tab.id}`}
+                                        aria-selected={isActive}
+                                        aria-controls={`panel-${tab.id}`}
+                                        tabIndex={isActive ? 0 : -1}
+                                        onClick={() => handleTabClick(tab.id)}
+                                        className={`mobile-job-tab-btn ${isActive ? 'active' : ''}`}
+                                    >
+                                        <Icon size={15} strokeWidth={isActive ? 2.3 : 1.8} className="shrink-0" />
+                                        <span className="mobile-job-tab-label">{tab.label}</span>
+                                    </button>
+                                )
+                            })}
+                        </div>
+                    </div>
+
+                    {/* 1. OVERVIEW PANEL */}
+                    <div
+                        id="panel-overview"
+                        role="tabpanel"
+                        aria-labelledby="tab-overview"
+                        className={`job-match-tab-panel ${activeTab === 'overview' ? 'active-mobile-panel' : ''} space-y-6 sm:space-y-8`}
+                    >
+                        {/* Overall Match Score Card */}
+                        <ErrorBoundary title="Match Score Summary">
+                            <MatchScoreCard
+                                matchScore={matchResult.match_score}
+                                overallScore={matchResult.overall_score}
+                                matchClassification={matchResult.match_classification}
+                                targetTitle={matchResult.parsed_job?.job_title}
+                                targetCompany={matchResult.parsed_job?.company}
                             />
                         </ErrorBoundary>
-                    )}
 
-                    {/* Matched Skills Overview */}
-                    <ErrorBoundary title="Matched Skills">
-                        <MatchedSkills
-                            matchedSkills={matchResult.matched_skills || []}
-                        />
-                    </ErrorBoundary>
+                        {/* Multi-Dimensional Score Breakdown */}
+                        {matchResult.match_score?.components && (
+                            <ErrorBoundary title="Score Breakdown">
+                                <ScoreBreakdown
+                                    components={matchResult.match_score.components}
+                                />
+                            </ErrorBoundary>
+                        )}
+                    </div>
 
-                    {/* Semantically Related Skills (separated) */}
-                    {matchResult.related_skills && matchResult.related_skills.length > 0 && (
-                        <ErrorBoundary title="Related Skills">
-                            <RelatedSkills
-                                relatedSkills={matchResult.related_skills}
+                    {/* 2. SKILLS PANEL */}
+                    <div
+                        id="panel-skills"
+                        role="tabpanel"
+                        aria-labelledby="tab-skills"
+                        className={`job-match-tab-panel ${activeTab === 'skills' ? 'active-mobile-panel' : ''} space-y-6 sm:space-y-8`}
+                    >
+                        {/* Matched Skills Overview */}
+                        <ErrorBoundary title="Matched Skills">
+                            <MatchedSkills
+                                matchedSkills={matchResult.matched_skills || []}
                             />
                         </ErrorBoundary>
-                    )}
 
-                    {/* Identified Skill Gaps */}
-                    <ErrorBoundary title="Missing Skills Assessment">
-                        <MissingSkills
-                            missingRequired={matchResult.missing_required_skills || []}
-                            missingPreferred={matchResult.missing_preferred_skills || []}
-                        />
-                    </ErrorBoundary>
+                        {/* Semantically Related Skills */}
+                        {matchResult.related_skills && matchResult.related_skills.length > 0 && (
+                            <ErrorBoundary title="Related Skills">
+                                <RelatedSkills
+                                    relatedSkills={matchResult.related_skills}
+                                />
+                            </ErrorBoundary>
+                        )}
 
-                    {/* Experience Relevance & Tenure Assessment */}
-                    {matchResult.experience_match && (
-                        <ErrorBoundary title="Experience Assessment">
-                            <ExperienceMatch
-                                experienceMatch={matchResult.experience_match}
+                        {/* Identified Skill Gaps */}
+                        <ErrorBoundary title="Missing Skills Assessment">
+                            <MissingSkills
+                                missingRequired={matchResult.missing_required_skills || []}
+                                missingPreferred={matchResult.missing_preferred_skills || []}
                             />
                         </ErrorBoundary>
-                    )}
+                    </div>
 
-                    {/* Education Alignment */}
-                    {matchResult.education_match && (
-                        <ErrorBoundary title="Education Alignment">
-                            <EducationMatch
-                                educationMatch={matchResult.education_match}
-                            />
-                        </ErrorBoundary>
-                    )}
+                    {/* 3. EXPERIENCE PANEL */}
+                    <div
+                        id="panel-experience"
+                        role="tabpanel"
+                        aria-labelledby="tab-experience"
+                        className={`job-match-tab-panel ${activeTab === 'experience' ? 'active-mobile-panel' : ''}`}
+                    >
+                        {matchResult.experience_match && (
+                            <ErrorBoundary title="Experience Assessment">
+                                <ExperienceMatch
+                                    experienceMatch={matchResult.experience_match}
+                                />
+                            </ErrorBoundary>
+                        )}
+                    </div>
 
-                    {/* Prioritized Actionable Recommendations */}
-                    {matchResult.recommendations && (
-                        <ErrorBoundary title="Recommendations">
-                            <Recommendations
-                                recommendations={matchResult.recommendations}
-                            />
-                        </ErrorBoundary>
-                    )}
+                    {/* 4. EDUCATION PANEL */}
+                    <div
+                        id="panel-education"
+                        role="tabpanel"
+                        aria-labelledby="tab-education"
+                        className={`job-match-tab-panel ${activeTab === 'education' ? 'active-mobile-panel' : ''}`}
+                    >
+                        {matchResult.education_match && (
+                            <ErrorBoundary title="Education Alignment">
+                                <EducationMatch
+                                    educationMatch={matchResult.education_match}
+                                />
+                            </ErrorBoundary>
+                        )}
+                    </div>
+
+                    {/* 5. ROADMAP PANEL */}
+                    <div
+                        id="panel-roadmap"
+                        role="tabpanel"
+                        aria-labelledby="tab-roadmap"
+                        className={`job-match-tab-panel ${activeTab === 'roadmap' ? 'active-mobile-panel' : ''}`}
+                    >
+                        {matchResult.recommendations && (
+                            <ErrorBoundary title="Recommendations">
+                                <Recommendations
+                                    recommendations={matchResult.recommendations}
+                                />
+                            </ErrorBoundary>
+                        )}
+                    </div>
                 </div>
             )}
         </div>

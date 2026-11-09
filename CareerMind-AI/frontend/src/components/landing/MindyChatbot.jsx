@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { X, Send, Sparkles, ShieldCheck, ArrowRight, Bot } from 'lucide-react'
 import MindyMascot from '../common/MindyMascot'
@@ -9,6 +9,8 @@ const PRESET_ANSWERS = {
     onboarding: "To get started, click 'Build My Career Profile' to register your background and target preferences in just 3 quick steps!",
     default: "I'm Mindy, your local AI career guide! You can start by building your Career Profile or testing your resume against job descriptions."
 }
+
+const GREETING_STORAGE_KEY = 'careermind_mascot_greeted'
 
 export default function MindyChatbot() {
     const [isOpen, setIsOpen] = useState(false)
@@ -21,11 +23,46 @@ export default function MindyChatbot() {
     const [inputValue, setInputValue] = useState('')
     const chatEndRef = useRef(null)
 
+    // Greeting popup state: show once on first visit, then auto-hide after 3s
+    const [showGreeting, setShowGreeting] = useState(() => {
+        try {
+            return !localStorage.getItem(GREETING_STORAGE_KEY)
+        } catch {
+            return false
+        }
+    })
+
+    const dismissGreeting = useCallback((e) => {
+        if (e) e.stopPropagation()
+        setShowGreeting(false)
+        try {
+            localStorage.setItem(GREETING_STORAGE_KEY, 'true')
+        } catch {}
+    }, [])
+
+    // Automatically hide greeting popup after approximately 3 seconds
+    useEffect(() => {
+        if (!showGreeting) return
+
+        const timer = setTimeout(() => {
+            dismissGreeting()
+        }, 3200)
+
+        return () => clearTimeout(timer)
+    }, [showGreeting, dismissGreeting])
+
     useEffect(() => {
         if (isOpen) {
             chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
         }
     }, [messages, isOpen])
+
+    const handleToggleOpen = () => {
+        if (!isOpen && showGreeting) {
+            dismissGreeting()
+        }
+        setIsOpen((prev) => !prev)
+    }
 
     const handleSend = (textToSend) => {
         const query = (textToSend || inputValue).trim()
@@ -50,7 +87,7 @@ export default function MindyChatbot() {
     }
 
     return (
-        <div className="fixed bottom-5 right-5 z-50 select-none">
+        <div className="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-5 md:bottom-6 md:right-6 z-40 select-none">
             {/* 1. Chatbot Dialogue Popup Card */}
             {isOpen && (
                 <div className="mb-3 w-[92vw] sm:w-[350px] max-h-[500px] flex flex-col rounded-3xl border border-purple-300/40 dark:border-purple-500/30 bg-[var(--surface-solid)]/95 shadow-2xl backdrop-blur-xl overflow-hidden transition-all duration-200 animate-in fade-in zoom-in-95">
@@ -155,10 +192,35 @@ export default function MindyChatbot() {
                 </div>
             )}
 
-            {/* 2. Floating Circular Mindy Avatar Button */}
+            {/* 2. Floating Greeting Popup (Shows for ~3s on first visit, or until dismissed) */}
+            {!isOpen && showGreeting && (
+                <div
+                    onClick={handleToggleOpen}
+                    role="status"
+                    aria-live="polite"
+                    className="absolute bottom-[calc(100%+0.75rem)] right-0 z-30 flex items-center gap-2 rounded-2xl border border-purple-200/90 dark:border-purple-500/40 bg-white/98 dark:bg-[#1E1738]/98 px-3.5 py-2 text-xs font-bold text-[#17172E] dark:text-[#F8FAFC] shadow-xl shadow-purple-900/15 backdrop-blur-md animate-in fade-in slide-in-from-bottom-2 duration-300 max-w-[calc(100vw-2rem)] whitespace-nowrap cursor-pointer hover:border-purple-400 dark:hover:border-purple-400 transition-colors"
+                >
+                    <span className="text-xs sm:text-sm">Let&apos;s do this! 🚀</span>
+
+                    {/* Small close/dismiss button */}
+                    <button
+                        type="button"
+                        onClick={dismissGreeting}
+                        aria-label="Dismiss greeting popup"
+                        className="flex h-4 w-4 items-center justify-center rounded-full text-[#94A3B8] hover:text-[#17172E] dark:hover:text-white hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-colors p-0.5 ml-0.5 cursor-pointer"
+                    >
+                        <X size={12} strokeWidth={2.5} />
+                    </button>
+
+                    {/* Pointer Arrow pointing down to the mascot */}
+                    <div className="absolute -bottom-1.5 right-6 w-3 h-3 rotate-45 border-r border-b border-purple-200/90 dark:border-purple-500/40 bg-white dark:bg-[#1E1738]" />
+                </div>
+            )}
+
+            {/* 3. Floating Circular Mindy Avatar Button */}
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={handleToggleOpen}
                 aria-label={isOpen ? 'Close Mindy AI Assistant' : 'Open Mindy AI Assistant'}
                 className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-[#6D28D9] via-[#8B5CF6] to-[#C4B5FD] p-0.5 shadow-[0_6px_25px_rgba(109,40,217,0.4)] hover:shadow-[0_8px_32px_rgba(109,40,217,0.55)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
@@ -176,9 +238,9 @@ export default function MindyChatbot() {
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-[#22C55E] ring-2 ring-white dark:ring-[#140F28]" />
                 </span>
 
-                {/* Hover Speech Bubble */}
-                {!isOpen && (
-                    <div className="absolute right-16 hidden group-hover:flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-white dark:bg-[#1C1731] border border-purple-200 dark:border-purple-500/30 px-3 py-1.5 text-xs font-bold text-[#17172E] dark:text-[#F8FAFC] shadow-lg animate-in fade-in slide-in-from-right-2">
+                {/* Subtle Hover Bubble on Desktop (only when closed and greeting is not active) */}
+                {!isOpen && !showGreeting && (
+                    <div className="absolute right-16 hidden md:group-hover:flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-white dark:bg-[#1C1731] border border-purple-200 dark:border-purple-500/30 px-3 py-1.5 text-xs font-bold text-[#17172E] dark:text-[#F8FAFC] shadow-lg animate-in fade-in slide-in-from-right-2">
                         <Bot size={13} className="text-[#8B5CF6]" />
                         <span>Chat with Mindy</span>
                     </div>

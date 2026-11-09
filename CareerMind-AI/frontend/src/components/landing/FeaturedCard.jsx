@@ -73,10 +73,11 @@ export default function FeaturedCard({ feature }) {
                 {isAvailable && feature.destination ? (
                     <Link
                         to={feature.destination}
-                        className="featured-card-cta w-full inline-flex items-center justify-center gap-2 rounded-2xl font-extrabold px-6 py-3.5 text-sm cursor-pointer group"
+                        style={{ backgroundColor: '#ffffff', color: '#4c1d95' }}
+                        className="featured-card-cta w-full inline-flex items-center justify-center gap-2 rounded-2xl font-extrabold px-6 py-3.5 text-sm cursor-pointer group shadow-lg"
                     >
-                        <span>{feature.ctaLabel}</span>
-                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        <span style={{ color: '#4c1d95' }} className="font-extrabold">{feature.ctaLabel}</span>
+                        <ArrowRight size={16} style={{ color: '#4c1d95', stroke: '#4c1d95' }} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                 ) : (
                     <div className="w-full flex items-center justify-center gap-2 rounded-2xl bg-white/20 border border-white/30 text-white font-bold px-6 py-3.5 text-xs sm:text-sm backdrop-blur-md">
@@ -88,4 +89,3 @@ export default function FeaturedCard({ feature }) {
         </motion.div>
     )
 }
-

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
     Sparkles,
@@ -8,6 +8,10 @@ import {
     FileCheck2,
     BriefcaseBusiness,
     ArrowRight,
+    Check,
+    ChevronLeft,
+    ChevronRight,
+    CheckCircle2,
 } from 'lucide-react'
 
 import { useCandidate } from '../context/CandidateContext'
@@ -22,6 +26,57 @@ import EducationTimeline from '../components/resume/EducationTimeline'
 import ProjectsSection from '../components/resume/ProjectsSection'
 import CertificationsSection from '../components/resume/CertificationsSection'
 import ProfileEditor from '../components/resume/ProfileEditor'
+
+const RESUME_SECTIONS = [
+    {
+        id: 'profile',
+        number: '01',
+        tabLabel: '01 Profile',
+        shortName: 'Profile',
+        title: 'Candidate Profile & Summary',
+        description: 'Candidate contact details, professional summary and core profile actions.',
+    },
+    {
+        id: 'skills',
+        number: '02',
+        tabLabel: '02 Skills',
+        shortName: 'Skills',
+        title: 'Technical Skills Intelligence',
+        description: 'Technical taxonomy, competency categories and extracted skills.',
+    },
+    {
+        id: 'experience',
+        number: '03',
+        tabLabel: '03 Experience',
+        shortName: 'Experience',
+        title: 'Work Experience & Internships',
+        description: 'Career history, internships, roles, tenure and responsibilities.',
+    },
+    {
+        id: 'education',
+        number: '04',
+        tabLabel: '04 Education',
+        shortName: 'Education',
+        title: 'Education & Qualifications',
+        description: 'Academic degrees, institutions, disciplines and academic timeline.',
+    },
+    {
+        id: 'projects',
+        number: '05',
+        tabLabel: '05 Projects',
+        shortName: 'Projects',
+        title: 'Featured Projects & Portfolio',
+        description: 'Technical projects, implementation stacks and project highlights.',
+    },
+    {
+        id: 'achievements',
+        number: '06',
+        tabLabel: '06 Achievements',
+        shortName: 'Achievements',
+        title: 'Certifications & Achievements',
+        description: 'Professional credentials, awards, milestones and certifications.',
+    },
+]
 
 export default function ResumeAnalyzer() {
     const { fileId: globalFileId, setResumeFileId, clearResume: clearGlobalResume } = useCandidate()
@@ -41,6 +96,37 @@ export default function ResumeAnalyzer() {
     const [isEdited, setIsEdited] = useState(false)
     const [isEditorOpen, setIsEditorOpen] = useState(false)
 
+    // Mobile section pagination state (< 450px)
+    const [currentSection, setCurrentSection] = useState(0)
+    const [visitedSections, setVisitedSections] = useState(() => new Set([0]))
+    const tabsRef = useRef(null)
+
+    // Auto-scroll active tab into center view on mobile selector
+    useEffect(() => {
+        if (tabsRef.current) {
+            const activeTabEl = tabsRef.current.querySelector(`[data-section-idx="${currentSection}"]`)
+            if (activeTabEl && typeof activeTabEl.scrollIntoView === 'function') {
+                activeTabEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
+            }
+        }
+    }, [currentSection])
+
+    const scrollToTop = useCallback(() => {
+        const dashboardContent = document.querySelector('.dashboard-content')
+        if (dashboardContent) {
+            dashboardContent.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, [])
+
+    const handleSelectSection = useCallback((idx) => {
+        if (idx >= 0 && idx < RESUME_SECTIONS.length) {
+            setCurrentSection(idx)
+            setVisitedSections((prev) => new Set([...prev, idx]))
+            setTimeout(scrollToTop, 50)
+        }
+    }, [scrollToTop])
+
     // Execute parsing given a valid file ID
     const executeParsing = useCallback(async (targetFileId) => {
         setStatus('parsing')
@@ -58,6 +144,8 @@ export default function ResumeAnalyzer() {
             setOriginalCandidate(parseRes.candidate)
             setCandidate(parseRes.candidate)
             setIsEdited(false)
+            setCurrentSection(0)
+            setVisitedSections(new Set([0]))
             setStatus('parsed')
         } catch (err) {
             setStatus('parse_error')
@@ -86,6 +174,8 @@ export default function ResumeAnalyzer() {
                         setResumeFileId(globalFileId)
                         setOriginalCandidate(parseRes.candidate)
                         setCandidate(parseRes.candidate)
+                        setCurrentSection(0)
+                        setVisitedSections(new Set([0]))
                         setStatus('parsed')
                     }
                 })
@@ -125,6 +215,8 @@ export default function ResumeAnalyzer() {
         setStatus('idle')
         setErrorMessage('')
         setUploadProgress(0)
+        setCurrentSection(0)
+        setVisitedSections(new Set([0]))
     }
 
     // Main upload & parse pipeline
@@ -187,6 +279,8 @@ export default function ResumeAnalyzer() {
         setStatus('idle')
         setErrorMessage('')
         setUploadProgress(0)
+        setCurrentSection(0)
+        setVisitedSections(new Set([0]))
     }
 
     // Save profile modifications locally
@@ -206,20 +300,20 @@ export default function ResumeAnalyzer() {
     }
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-8">
+        <div className="mx-auto w-full max-w-6xl space-y-6 sm:space-y-8">
             {/* Page Header */}
             <div>
-                <div className="mb-2.5 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
+                <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--accent)]">
                     <Sparkles size={16} />
                     <span>Career Intelligence Engine</span>
                 </div>
 
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl">
+                        <h1 className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl md:text-4xl">
                             Resume Intelligence Dashboard
                         </h1>
-                        <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                        <p className="mt-1 text-xs sm:text-sm text-[var(--text-secondary)]">
                             AI-driven resume parsing, technical competency taxonomy, and career milestones.
                         </p>
                     </div>
@@ -319,46 +413,156 @@ export default function ResumeAnalyzer() {
 
             {/* Stage 3: Full Resume Intelligence Dashboard */}
             {status === 'parsed' && candidate && (
-                <div className="space-y-8 animate-fadeIn">
-                    {/* Candidate Profile Overview Card */}
-                    <CandidateProfile
-                        personalInfo={candidate.personal_information}
-                        fileId={fileId}
-                        isEdited={isEdited}
-                        onEdit={() => setIsEditorOpen(true)}
-                        onUploadAnother={handleUploadAnother}
-                    />
+                <div className="space-y-6 sm:space-y-8 animate-fadeIn">
+                    {/* MOBILE-ONLY SECTION SELECTOR (< 450px) */}
+                    <div
+                        className="mobile-resume-nav-tabs"
+                        ref={tabsRef}
+                        role="tablist"
+                        aria-label="Resume sections navigation"
+                    >
+                        {RESUME_SECTIONS.map((sec, idx) => {
+                            const isActive = currentSection === idx
+                            const isVisited = visitedSections.has(idx)
 
-                    {/* Professional Summary */}
-                    <ProfessionalSummary
-                        summary={candidate.professional_summary}
-                    />
+                            return (
+                                <button
+                                    key={sec.id}
+                                    type="button"
+                                    role="tab"
+                                    aria-selected={isActive}
+                                    data-section-idx={idx}
+                                    onClick={() => handleSelectSection(idx)}
+                                    className={`mobile-resume-tab-btn ${isActive ? 'active' : ''} ${isVisited && !isActive ? 'visited' : ''}`}
+                                    aria-label={`Go to section ${sec.number}: ${sec.shortName}`}
+                                >
+                                    {isVisited && !isActive && (
+                                        <Check size={11} className="text-emerald-500 dark:text-emerald-400 shrink-0" strokeWidth={3} />
+                                    )}
+                                    <span>{sec.tabLabel}</span>
+                                </button>
+                            )
+                        })}
+                    </div>
 
-                    {/* Technical Skills Categorization Dashboard */}
-                    <SkillsOverview
-                        skills={candidate.technical_skills}
-                    />
+                    {/* MOBILE-ONLY SECTION BANNER (< 450px) */}
+                    <div className="mobile-resume-section-banner">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                            <span className="section-badge">
+                                SECTION {RESUME_SECTIONS[currentSection].number} / 06
+                            </span>
+                            <span className="section-progress-text">
+                                {Math.round(((currentSection + 1) / RESUME_SECTIONS.length) * 100)}% Complete
+                            </span>
+                        </div>
 
-                    {/* Work Experience Timeline */}
-                    <ExperienceTimeline
-                        experience={candidate.experience}
-                    />
+                        {/* Visual Progress Bar */}
+                        <div className="section-progress-track">
+                            <div
+                                className="section-progress-fill"
+                                style={{ width: `${((currentSection + 1) / RESUME_SECTIONS.length) * 100}%` }}
+                            />
+                        </div>
 
-                    {/* Education Credentials Timeline */}
-                    <EducationTimeline
-                        education={candidate.education}
-                    />
+                        <h2 className="section-title">
+                            {RESUME_SECTIONS[currentSection].title}
+                        </h2>
+                        <p className="section-desc">
+                            {RESUME_SECTIONS[currentSection].description}
+                        </p>
+                    </div>
 
-                    {/* Featured Projects Portfolio */}
-                    <ProjectsSection
-                        projects={candidate.projects}
-                    />
+                    {/* 01 — Profile (Candidate Profile Overview & Professional Summary) */}
+                    <div className={`resume-section-item ${currentSection === 0 ? 'active-mobile-section' : ''} space-y-6 sm:space-y-8`}>
+                        <CandidateProfile
+                            personalInfo={candidate.personal_information}
+                            fileId={fileId}
+                            isEdited={isEdited}
+                            onEdit={() => setIsEditorOpen(true)}
+                            onUploadAnother={handleUploadAnother}
+                        />
+                        <ProfessionalSummary
+                            summary={candidate.professional_summary}
+                        />
+                    </div>
 
-                    {/* Certifications & Achievements */}
-                    <CertificationsSection
-                        certifications={candidate.certifications}
-                        achievements={candidate.achievements}
-                    />
+                    {/* 02 — Skills (Technical Skills Categorization Dashboard) */}
+                    <div className={`resume-section-item ${currentSection === 1 ? 'active-mobile-section' : ''}`}>
+                        <SkillsOverview
+                            skills={candidate.technical_skills}
+                        />
+                    </div>
+
+                    {/* 03 — Experience (Work Experience Timeline) */}
+                    <div className={`resume-section-item ${currentSection === 2 ? 'active-mobile-section' : ''}`}>
+                        <ExperienceTimeline
+                            experience={candidate.experience}
+                        />
+                    </div>
+
+                    {/* 04 — Education (Education Credentials Timeline) */}
+                    <div className={`resume-section-item ${currentSection === 3 ? 'active-mobile-section' : ''}`}>
+                        <EducationTimeline
+                            education={candidate.education}
+                        />
+                    </div>
+
+                    {/* 05 — Projects (Featured Projects Portfolio) */}
+                    <div className={`resume-section-item ${currentSection === 4 ? 'active-mobile-section' : ''}`}>
+                        <ProjectsSection
+                            projects={candidate.projects}
+                        />
+                    </div>
+
+                    {/* 06 — Achievements (Certifications & Achievements) */}
+                    <div className={`resume-section-item ${currentSection === 5 ? 'active-mobile-section' : ''}`}>
+                        <CertificationsSection
+                            certifications={candidate.certifications}
+                            achievements={candidate.achievements}
+                        />
+                    </div>
+
+                    {/* MOBILE-ONLY PREVIOUS / NEXT FOOTER CONTROLS (< 450px) */}
+                    <div className="mobile-resume-pagination-footer">
+                        <button
+                            type="button"
+                            onClick={() => handleSelectSection(currentSection - 1)}
+                            disabled={currentSection === 0}
+                            className="mobile-page-btn prev-btn"
+                            aria-label="Previous section"
+                        >
+                            <ChevronLeft size={16} />
+                            <span>Previous</span>
+                        </button>
+
+                        <div className="mobile-page-indicator">
+                            <span>{RESUME_SECTIONS[currentSection].number}</span>
+                            <span className="text-[var(--text-muted)] font-normal">/</span>
+                            <span>06</span>
+                        </div>
+
+                        {currentSection < RESUME_SECTIONS.length - 1 ? (
+                            <button
+                                type="button"
+                                onClick={() => handleSelectSection(currentSection + 1)}
+                                className="mobile-page-btn next-btn"
+                                aria-label="Next section"
+                            >
+                                <span>Next</span>
+                                <ChevronRight size={16} />
+                            </button>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => handleSelectSection(0)}
+                                className="mobile-page-btn finish-btn"
+                                aria-label="Finish and return to profile overview"
+                            >
+                                <CheckCircle2 size={16} />
+                                <span>Finish</span>
+                            </button>
+                        )}
+                    </div>
                 </div>
             )}
 

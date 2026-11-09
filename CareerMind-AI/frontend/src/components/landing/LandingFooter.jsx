@@ -10,7 +10,7 @@ export default function LandingFooter() {
     }
 
     return (
-        <footer className="border-t border-[var(--border)] bg-[var(--surface-solid)]/40 py-12 transition-colors duration-200">
+        <footer className="border-t border-purple-200/60 dark:border-purple-900/30 bg-white/60 dark:bg-[#0D0A1A]/60 py-12 transition-colors duration-200">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                     {/* Brand & Description */}
@@ -27,7 +27,7 @@ export default function LandingFooter() {
                                 CareerMind <span className="purple-gradient-text">AI</span>
                             </span>
                         </Link>
-                        <p className="text-xs text-[#64748B] dark:text-[#8E8AA7] leading-relaxed">
+                        <p className="text-xs text-[#64748B] dark:text-[#CBD5E1]/90 leading-relaxed">
                             A modern, local-first career intelligence platform designed to help candidates evaluate their skills and accelerate career growth.
                         </p>
                     </div>
@@ -63,7 +63,7 @@ export default function LandingFooter() {
                 </div>
 
                 {/* Bottom Copyright */}
-                <div className="pt-6 border-t border-[var(--border)] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#64748B] dark:text-[#8E8AA7]">
+                <div className="pt-6 border-t border-purple-100 dark:border-purple-900/30 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-[#64748B] dark:text-[#CBD5E1]/90">
                     <span>&copy; {new Date().getFullYear()} CareerMind AI &bull; Mindy Mascot. All rights reserved.</span>
                     <span className="flex items-center gap-1.5">
                         <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />
