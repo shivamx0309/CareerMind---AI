@@ -10,32 +10,32 @@ function formatEduStatus(status) {
         case 'exact_match':
             return {
                 label: 'Exact Degree Match',
-                className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+                className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
                 icon: CheckCircle2,
             }
         case 'related_match':
             return {
                 label: 'Related Field Match',
-                className: 'border-sky-500/30 bg-sky-500/10 text-sky-400',
+                className: 'border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-400',
                 icon: CheckCircle2,
             }
         case 'missing':
             return {
                 label: 'Missing Degree Requirement',
-                className: 'border-rose-500/30 bg-rose-500/10 text-rose-400',
+                className: 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-400',
                 icon: AlertCircle,
             }
         case 'not_required':
             return {
                 label: 'Not Required by JD',
-                className: 'border-slate-600/30 bg-slate-700/20 text-slate-400',
+                className: 'border-slate-600/30 bg-slate-700/20 text-slate-700 dark:text-slate-400',
                 icon: Info,
             }
         case 'insufficient_data':
         default:
             return {
                 label: 'Degree Level Unspecified',
-                className: 'border-slate-500/30 bg-slate-500/10 text-slate-300',
+                className: 'border-slate-500/30 bg-slate-500/10 text-slate-700 dark:text-slate-300',
                 icon: AlertCircle,
             }
     }

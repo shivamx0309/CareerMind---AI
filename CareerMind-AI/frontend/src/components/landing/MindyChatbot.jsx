@@ -37,7 +37,9 @@ export default function MindyChatbot() {
         setShowGreeting(false)
         try {
             localStorage.setItem(GREETING_STORAGE_KEY, 'true')
-        } catch {}
+        } catch {
+            // Ignore storage errors safely
+        }
     }, [])
 
     // Automatically hide greeting popup after approximately 3 seconds

@@ -13,18 +13,18 @@ export default function RelatedSkills({ relatedSkills = [] }) {
         <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-6 border-l-4 border-l-amber-500">
             <div className="flex flex-col gap-2 border-b border-[var(--border)] pb-4">
                 <div className="flex items-center gap-2">
-                    <GitFork size={18} className="text-amber-400" />
+                    <GitFork size={18} className="text-amber-600 dark:text-amber-400" />
                     <h3 className="text-lg font-bold text-[var(--text-primary)]">
                         Semantically Related Technologies
                     </h3>
-                    <span className="rounded-full bg-amber-500/20 px-2.5 py-0.5 text-xs font-bold text-amber-300">
+                    <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 text-xs font-bold text-amber-800 dark:text-amber-300">
                         {relatedSkills.length}
                     </span>
                 </div>
 
                 {/* Critical Boundary Notice */}
-                <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
-                    <ShieldAlert size={16} className="mt-0.5 shrink-0 text-amber-400" />
+                <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-900 dark:text-amber-200">
+                    <ShieldAlert size={16} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
                     <div>
                         <strong className="font-semibold block mb-0.5">
                             Conceptual Similarity ≠ Direct Interchangeability
@@ -53,7 +53,7 @@ export default function RelatedSkills({ relatedSkills = [] }) {
                                 </h4>
                             </div>
 
-                            <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-amber-300">
+                            <span className="rounded-full border border-amber-500/30 bg-amber-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-amber-800 dark:text-amber-300">
                                 Partial Credit ({Math.round((item.match_confidence ?? item.confidence ?? 0.6) * 100)}%)
                             </span>
                         </div>
@@ -63,11 +63,11 @@ export default function RelatedSkills({ relatedSkills = [] }) {
                             <span className="text-xs font-medium text-[var(--text-secondary)]">
                                 Resume Has:
                             </span>
-                            <span className="font-mono font-bold text-amber-400">
+                            <span className="font-mono font-bold text-amber-700 dark:text-amber-400">
                                 {item.candidate_evidence || 'Related Tool'}
                             </span>
                             <ArrowRight size={13} className="text-[var(--text-muted)]" />
-                            <span className="font-mono font-bold text-indigo-400">
+                            <span className="font-mono font-bold text-indigo-700 dark:text-indigo-400">
                                 {item.skill}
                             </span>
                         </div>

@@ -81,13 +81,13 @@ export default function CandidateProfile({
                                 <span>{location}</span>
                             </p>
                         ) : (
-                            <p className="text-xs text-[var(--text-muted)] italic">
+                            <p className="text-xs text-[var(--text-secondary)] italic">
                                 Location not detected
                             </p>
                         )}
 
                         {fileId && (
-                            <div className="flex items-center gap-2 pt-1 text-xs text-[var(--text-muted)]">
+                            <div className="flex items-center gap-2 pt-1 text-xs text-[var(--text-secondary)]">
                                 <span className="font-mono">ID: {fileId.slice(0, 8)}...{fileId.slice(-6)}</span>
                                 <button
                                     type="button"
@@ -131,9 +131,9 @@ export default function CandidateProfile({
                     <button
                         type="button"
                         onClick={onUploadAnother}
-                        className="inline-flex items-center gap-2 rounded-xl border border-transparent bg-[var(--surface-hover)] px-4 py-2.5 text-sm font-medium text-[var(--text-secondary)] transition-all hover:bg-[var(--accent-soft)] hover:text-[var(--accent)]"
+                        className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] px-4 py-2.5 text-sm font-semibold text-[var(--text-primary)] shadow-sm transition-all hover:border-[var(--accent)] hover:bg-[var(--surface-hover)] hover:text-[var(--accent)]"
                     >
-                        <FileUp size={16} />
+                        <FileUp size={16} className="text-[var(--accent)]" />
                         <span>Upload Another</span>
                     </button>
                 </div>
@@ -183,15 +183,15 @@ export default function CandidateProfile({
                         href={linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] p-3 text-sm text-[var(--text-primary)] transition-all hover:border-[var(--accent)] hover:bg-[var(--surface-hover)]"
+                        className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] p-3 text-sm text-[var(--text-primary)] transition-all hover:border-[var(--accent)] hover:bg-[var(--surface-hover)] shadow-sm"
                     >
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-500/15 text-blue-400">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400">
                             <LinkedinIcon size={16} />
                         </div>
                         <span className="truncate">LinkedIn Profile</span>
                     </a>
                 ) : (
-                    <div className="flex items-center gap-3 rounded-xl border border-[var(--border)]/50 bg-[var(--surface)] p-3 text-xs text-[var(--text-muted)]">
+                    <div className="flex items-center gap-3 rounded-xl border border-[var(--border)]/70 bg-[var(--surface-hover)]/40 p-3 text-xs text-[var(--text-secondary)]">
                         <LinkedinIcon size={16} className="shrink-0" />
                         <span>LinkedIn not detected</span>
                     </div>
@@ -203,15 +203,15 @@ export default function CandidateProfile({
                         href={github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] p-3 text-sm text-[var(--text-primary)] transition-all hover:border-[var(--accent)] hover:bg-[var(--surface-hover)]"
+                        className="flex items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-solid)] p-3 text-sm text-[var(--text-primary)] transition-all hover:border-[var(--accent)] hover:bg-[var(--surface-hover)] shadow-sm"
                     >
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-500/15 text-purple-400">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-500/15 text-purple-600 dark:text-purple-400">
                             <GithubIcon size={16} />
                         </div>
                         <span className="truncate">GitHub Profile</span>
                     </a>
                 ) : (
-                    <div className="flex items-center gap-3 rounded-xl border border-[var(--border)]/50 bg-[var(--surface)] p-3 text-xs text-[var(--text-muted)]">
+                    <div className="flex items-center gap-3 rounded-xl border border-[var(--border)]/70 bg-[var(--surface-hover)]/40 p-3 text-xs text-[var(--text-secondary)]">
                         <GithubIcon size={16} className="shrink-0" />
                         <span>GitHub not detected</span>
                     </div>

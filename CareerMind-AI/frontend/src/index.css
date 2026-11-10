@@ -51,20 +51,20 @@
   --surface-hover: #f5f3ff;
 
   --text-primary: #17172e;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
 
-  --border: rgba(109, 40, 217, 0.12);
+  --border: rgba(109, 40, 217, 0.14);
 
   --primary-purple: #6d28d9;
   --secondary-violet: #8b5cf6;
-  --accent-lavender: #c4b5fd;
+  --accent-lavender: #7c3aed;
   --accent: #6d28d9;
   --accent-secondary: #8b5cf6;
   --accent-soft: rgba(109, 40, 217, 0.08);
 
-  --success: #22c55e;
-  --warning: #f59e0b;
+  --success: #16a34a;
+  --warning: #d97706;
 
   --shadow: 0 15px 45px rgba(109, 40, 217, 0.07);
   --shadow-sm: 0 4px 14px rgba(109, 40, 217, 0.04);

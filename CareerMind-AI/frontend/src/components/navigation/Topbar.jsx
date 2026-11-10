@@ -10,6 +10,7 @@ import { useTheme } from '../../context/ThemeContext'
 import { useCareerProfile } from '../../context/CareerProfileContext'
 import MindyMascot from '../common/MindyMascot'
 
+// eslint-disable-next-line no-unused-vars
 export default function Topbar({ onMenuClick }) {
     const { theme, toggleTheme } = useTheme()
     const { profile } = useCareerProfile()

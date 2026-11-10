@@ -5,6 +5,8 @@ Pydantic schemas for resume library records and parsed details.
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
 
+from schemas.candidate_schema import CandidateProfile
+
 
 class ResumeRecordResponse(BaseModel):
     id: str
@@ -111,3 +113,9 @@ class ResumeProfileDetailResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+class ResumeDetailResponse(ResumeRecordResponse):
+    candidate: CandidateProfile | None = None
+    profile_detail: ResumeProfileDetailResponse | None = None
+
+    model_config = ConfigDict(from_attributes=True)
