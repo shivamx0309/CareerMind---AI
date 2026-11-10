@@ -24,11 +24,11 @@ export default function MissingSkills({
         <div className="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
             <div className="flex flex-col gap-1 border-b border-[var(--border)] pb-4">
                 <div className="flex items-center gap-2">
-                    <AlertOctagon size={18} className="text-rose-400" />
+                    <AlertOctagon size={18} className="text-rose-600 dark:text-rose-400" />
                     <h3 className="text-lg font-bold text-[var(--text-primary)]">
                         Identified Skill Gaps
                     </h3>
-                    <span className="rounded-full bg-rose-500/20 px-2.5 py-0.5 text-xs font-bold text-rose-300">
+                    <span className="rounded-full border border-rose-500/30 bg-rose-500/15 px-2.5 py-0.5 text-xs font-bold text-rose-700 dark:text-rose-300">
                         {totalMissing}
                     </span>
                 </div>
@@ -61,12 +61,12 @@ export default function MissingSkills({
                                         <h5 className="text-sm font-bold text-[var(--text-primary)]">
                                             {skillName}
                                         </h5>
-                                        <span className="rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 text-[10px] font-bold text-rose-400 shrink-0">
+                                        <span className="rounded-full border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 text-[10px] font-bold text-rose-700 dark:text-rose-400 shrink-0">
                                             Required
                                         </span>
                                     </div>
 
-                                    <p className="mt-2 text-xs text-rose-300/80 leading-relaxed">
+                                    <p className="mt-2 text-xs text-rose-800/80 dark:text-rose-300/80 leading-relaxed">
                                         No direct mentions or verifiable project demonstrations detected in profile.
                                     </p>
 
@@ -87,7 +87,7 @@ export default function MissingSkills({
                 <div className="space-y-3 pt-2">
                     <div className="flex items-center gap-2">
                         <Bookmark size={15} className="text-amber-500" />
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                        <h4 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
                             Missing Preferred Qualifications ({missingPreferred.length})
                         </h4>
                     </div>
@@ -106,12 +106,12 @@ export default function MissingSkills({
                                         <h5 className="text-sm font-bold text-[var(--text-primary)]">
                                             {skillName}
                                         </h5>
-                                        <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-400 shrink-0">
+                                        <span className="rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-800 dark:text-amber-400 shrink-0">
                                             Preferred
                                         </span>
                                     </div>
 
-                                    <p className="mt-2 text-xs text-amber-300/80 leading-relaxed">
+                                    <p className="mt-2 text-xs text-amber-800/80 dark:text-amber-300/80 leading-relaxed">
                                         Nice-to-have skill not currently evidenced in candidate history.
                                     </p>
 

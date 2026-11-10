@@ -13,38 +13,38 @@ function formatAssessmentStatus(status) {
         case 'exceeds_requirement':
             return {
                 label: 'Exceeds Requirement',
-                className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+                className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
                 icon: CheckCircle2,
             }
         case 'meets_requirement':
             return {
                 label: 'Meets Requirement',
-                className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400',
+                className: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
                 icon: CheckCircle2,
             }
         case 'partial':
             return {
                 label: 'Partial Match',
-                className: 'border-amber-500/30 bg-amber-500/10 text-amber-400',
+                className: 'border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-400',
                 icon: AlertCircle,
             }
         case 'below_requirement':
             return {
                 label: 'Below Requirement',
-                className: 'border-rose-500/30 bg-rose-500/10 text-rose-400',
+                className: 'border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-400',
                 icon: AlertCircle,
             }
         case 'not_required':
             return {
                 label: 'Not Required by JD',
-                className: 'border-slate-600/30 bg-slate-700/20 text-slate-400',
+                className: 'border-slate-600/30 bg-slate-700/20 text-slate-700 dark:text-slate-400',
                 icon: Info,
             }
         case 'insufficient_data':
         default:
             return {
                 label: 'Insufficient Date Data',
-                className: 'border-slate-500/30 bg-slate-500/10 text-slate-300',
+                className: 'border-slate-500/30 bg-slate-500/10 text-slate-700 dark:text-slate-300',
                 icon: FileQuestion,
             }
     }

@@ -99,13 +99,28 @@ class ResumeRecord(Base):
         uselist=False,
         cascade="all, delete-orphan",
     )
+    skill_gap_reports: Mapped[list["SkillGapReport"]] = relationship(
+        "SkillGapReport",
+        back_populates="resume_record",
+        cascade="all, delete-orphan",
+    )
+    learning_roadmaps: Mapped[list["LearningRoadmap"]] = relationship(
+        "LearningRoadmap",
+        back_populates="resume_record",
+        cascade="all, delete-orphan",
+    )
+    interview_sessions: Mapped[list["InterviewSession"]] = relationship(
+        "InterviewSession",
+        back_populates="resume_record",
+    )
 
     __table_args__ = (
-        # Enforces at most one default resume per career profile at the database level
+        # Enforces at most one default resume per career profile at the database level (SQLite & PostgreSQL compatible)
         Index(
             "uq_profile_default_resume",
             "career_profile_id",
             unique=True,
             sqlite_where=text("is_default = 1"),
+            postgresql_where=text("is_default IS TRUE"),
         ),
     )

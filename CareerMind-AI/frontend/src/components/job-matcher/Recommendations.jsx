@@ -14,14 +14,14 @@ function formatPriorityBadge(priority) {
         case 'HIGH':
             return {
                 label: 'High Priority',
-                badge: 'border-rose-500/30 bg-rose-500/15 text-rose-400',
+                badge: 'border border-rose-500/30 bg-rose-500/15 text-rose-700 dark:text-rose-400',
                 border: 'border-l-rose-500',
                 icon: Flame,
             }
         case 'MEDIUM':
             return {
                 label: 'Medium Priority',
-                badge: 'border-amber-500/30 bg-amber-500/15 text-amber-400',
+                badge: 'border border-amber-500/30 bg-amber-500/15 text-amber-800 dark:text-amber-400',
                 border: 'border-l-amber-500',
                 icon: Compass,
             }
@@ -29,7 +29,7 @@ function formatPriorityBadge(priority) {
         default:
             return {
                 label: 'Low Priority',
-                badge: 'border-indigo-500/30 bg-indigo-500/15 text-indigo-400',
+                badge: 'border border-indigo-500/30 bg-indigo-500/15 text-indigo-700 dark:text-indigo-400',
                 border: 'border-l-indigo-500',
                 icon: Clock,
             }

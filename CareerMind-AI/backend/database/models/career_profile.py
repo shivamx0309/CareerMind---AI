@@ -4,10 +4,19 @@ CareerProfile entity representing basic user preferences and local identity.
 
 import uuid
 from datetime import datetime, timezone
+from typing import TYPE_CHECKING
 from sqlalchemy import String, Integer, Text, Boolean, DateTime, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.base import Base
+
+if TYPE_CHECKING:
+    from database.models.career_goal import CareerGoal
+    from database.models.learning_preference import LearningPreference
+    from database.models.resume_record import ResumeRecord
+    from database.models.skill_gap_report import SkillGapReport
+    from database.models.learning_roadmap import LearningRoadmap
+    from database.models.interview_session import InterviewSession
 
 
 class CareerProfile(Base):
@@ -110,4 +119,22 @@ class CareerProfile(Base):
         back_populates="career_profile",
         cascade="all, delete-orphan",
         order_by="desc(ResumeRecord.created_at)",
+    )
+    skill_gap_reports: Mapped[list["SkillGapReport"]] = relationship(
+        "SkillGapReport",
+        back_populates="career_profile",
+        cascade="all, delete-orphan",
+        order_by="desc(SkillGapReport.created_at)",
+    )
+    learning_roadmaps: Mapped[list["LearningRoadmap"]] = relationship(
+        "LearningRoadmap",
+        back_populates="career_profile",
+        cascade="all, delete-orphan",
+        order_by="desc(LearningRoadmap.created_at)",
+    )
+    interview_sessions: Mapped[list["InterviewSession"]] = relationship(
+        "InterviewSession",
+        back_populates="career_profile",
+        cascade="all, delete-orphan",
+        order_by="desc(InterviewSession.created_at)",
     )

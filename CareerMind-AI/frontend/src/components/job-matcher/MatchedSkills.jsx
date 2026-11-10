@@ -55,11 +55,11 @@ export default function MatchedSkills({ matchedSkills = [] }) {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--border)] pb-4">
                 <div>
                     <div className="flex items-center gap-2">
-                        <CheckCircle2 size={18} className="text-emerald-400" />
+                        <CheckCircle2 size={18} className="text-emerald-600 dark:text-emerald-400" />
                         <h3 className="text-lg font-bold text-[var(--text-primary)]">
                             Direct Matched Skills
                         </h3>
-                        <span className="rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-bold text-emerald-300">
+                        <span className="rounded-full border border-emerald-500/30 bg-emerald-500/15 px-2.5 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
                             {exactAndAliasList.length}
                         </span>
                     </div>
@@ -137,7 +137,7 @@ export default function MatchedSkills({ matchedSkills = [] }) {
                                 <div>
                                     <div className="flex items-start justify-between gap-2">
                                         <div className="flex items-center gap-1.5">
-                                            <Code size={14} className="text-emerald-400 shrink-0" />
+                                            <Code size={14} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                                             <h4 className="text-sm font-bold text-[var(--text-primary)]">
                                                 {item.skill}
                                             </h4>
@@ -147,8 +147,8 @@ export default function MatchedSkills({ matchedSkills = [] }) {
                                         <span
                                             className={`rounded-full px-2 py-0.5 text-[10px] font-semibold shrink-0 ${
                                                 isAlias
-                                                    ? 'border border-sky-500/30 bg-sky-500/10 text-sky-300'
-                                                    : 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+                                                    ? 'border border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300'
+                                                    : 'border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
                                             }`}
                                         >
                                             {isAlias ? 'Canonical Alias' : 'Exact Match'}
@@ -161,7 +161,7 @@ export default function MatchedSkills({ matchedSkills = [] }) {
                                             {item.requirement_type || 'Required'}
                                         </span>
                                         <span>•</span>
-                                        <span className="flex items-center gap-1 text-emerald-400 font-medium">
+                                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
                                             <Sparkles size={11} />
                                             {Math.round((item.match_confidence ?? item.confidence ?? 1.0) * 100)}% match
                                         </span>

@@ -1,14 +1,14 @@
 """
 Resume library service managing resume records, default selection, and two-way CandidateProfile mapping.
+Integrates storage service for physical PDF lifecycle management.
 """
 
-import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update
+from sqlalchemy import select, update, or_
 
 from database.models.resume_record import ResumeRecord
 from database.models.resume_profile import ResumeProfile
@@ -27,41 +27,48 @@ from schemas.candidate_schema import (
     CertificationEntry,
     AchievementEntry,
 )
+from services.storage_service import (
+    validate_file_id,
+    get_file_path,
+    delete_file,
+    file_exists,
+    UPLOAD_DIR,
+)
 
-HEX_32_REGEX = re.compile(r"^[0-9a-f]{32}$", re.IGNORECASE)
-
-# Backend and project roots
-BACKEND_DIR = Path(__file__).resolve().parent.parent
-PROJECT_ROOT = BACKEND_DIR.parent
-UPLOAD_DIR = PROJECT_ROOT / "data" / "uploads"
-
-
-def validate_file_id_format(file_id: str) -> str:
-    """Validate that file_id is strictly a 32-character hexadecimal string."""
-    if not file_id or not isinstance(file_id, str):
-        raise ValueError("Invalid file ID: must be a non-empty string.")
-    cleaned = file_id.strip().lower()
-    if not HEX_32_REGEX.match(cleaned):
-        raise ValueError(f"Invalid file ID format: '{file_id}'. Must be a 32-char hex string.")
-    return cleaned
+# Backward-compatibility aliases
+validate_file_id_format = validate_file_id
+derive_server_file_path = get_file_path
 
 
-def derive_server_file_path(file_id: str) -> Path:
-    """
-    Derive the secure physical PDF path server-side from the validated file_id.
-    Never trusts client-supplied file paths.
-    """
-    validated_id = validate_file_id_format(file_id)
-    upload_dir_resolved = UPLOAD_DIR.resolve()
-    target_path = (UPLOAD_DIR / f"{validated_id}.pdf").resolve()
+def get_resume_record(
+    db: Session,
+    career_profile_id: str,
+    resume_id: str,
+) -> Optional[ResumeRecord]:
+    """Look up a resume record by either database UUID (id) or 32-hex file_id for a career profile."""
+    stmt = (
+        select(ResumeRecord)
+        .where(
+            ResumeRecord.career_profile_id == career_profile_id,
+            (ResumeRecord.id == resume_id) | (ResumeRecord.file_id == resume_id),
+        )
+    )
+    return db.execute(stmt).scalar_one_or_none()
 
-    # Prevent path traversal outside uploads directory
-    try:
-        target_path.relative_to(upload_dir_resolved)
-    except ValueError as exc:
-        raise ValueError("Invalid file path: path traversal detected.") from exc
 
-    return target_path
+def get_default_resume_record(
+    db: Session,
+    career_profile_id: str,
+) -> Optional[ResumeRecord]:
+    """Retrieve the designated default resume record for a career profile."""
+    stmt = (
+        select(ResumeRecord)
+        .where(
+            ResumeRecord.career_profile_id == career_profile_id,
+            ResumeRecord.is_default == True,
+        )
+    )
+    return db.execute(stmt).scalar_one_or_none()
 
 
 def register_uploaded_resume(
@@ -71,13 +78,14 @@ def register_uploaded_resume(
     original_filename: str,
     file_size: int,
     display_name: Optional[str] = None,
+    base_dir: Optional[Path] = None,
 ) -> ResumeRecord:
     """
     Register an uploaded resume file record under a career profile.
     Derives the server file path automatically and manages default status.
     """
-    validated_id = validate_file_id_format(file_id)
-    resolved_path = derive_server_file_path(validated_id)
+    validated_id = validate_file_id(file_id)
+    resolved_path = get_file_path(validated_id, base_dir=base_dir)
 
     # Check for existing record with this file_id
     stmt = select(ResumeRecord).where(ResumeRecord.file_id == validated_id)
@@ -119,8 +127,8 @@ def set_default_resume(
     Atomically designate a target resume as the default for the career profile.
     Clears the previous default inside the same transaction to satisfy the partial unique index.
     """
-    target = db.get(ResumeRecord, resume_record_id)
-    if not target or target.career_profile_id != career_profile_id:
+    target = get_resume_record(db, career_profile_id, resume_record_id)
+    if not target:
         raise ValueError(f"ResumeRecord '{resume_record_id}' not found for profile '{career_profile_id}'.")
 
     if target.is_default:
@@ -149,15 +157,18 @@ def delete_resume_record(
     db: Session,
     career_profile_id: str,
     resume_record_id: str,
+    base_dir: Optional[Path] = None,
 ) -> bool:
     """
-    Delete a resume record and its parsed profile children.
+    Delete a resume record and its parsed profile children from database.
+    Safely removes its corresponding physical PDF file from disk.
     If the deleted resume was default, promotes the most recently updated remaining resume.
     """
-    target = db.get(ResumeRecord, resume_record_id)
-    if not target or target.career_profile_id != career_profile_id:
+    target = get_resume_record(db, career_profile_id, resume_record_id)
+    if not target:
         return False
 
+    old_file_id = target.file_id
     was_default = target.is_default
     db.delete(target)
     db.flush()
@@ -175,6 +186,9 @@ def delete_resume_record(
             remaining.is_default = True
 
     db.commit()
+
+    # Safely delete physical file from storage
+    delete_file(old_file_id, base_dir=base_dir)
     return True
 
 
@@ -182,15 +196,90 @@ def rename_resume_record(
     db: Session,
     resume_record_id: str,
     new_display_name: str,
+    career_profile_id: Optional[str] = None,
 ) -> Optional[ResumeRecord]:
     """Update the user-facing display name of a resume record."""
-    target = db.get(ResumeRecord, resume_record_id)
+    if career_profile_id:
+        target = get_resume_record(db, career_profile_id, resume_record_id)
+    else:
+        target = db.get(ResumeRecord, resume_record_id)
+        if not target:
+            stmt = select(ResumeRecord).where(
+                (ResumeRecord.id == resume_record_id) | (ResumeRecord.file_id == resume_record_id)
+            )
+            target = db.execute(stmt).scalar_one_or_none()
+
     if not target:
         return None
 
     target.display_name = new_display_name.strip()
     db.commit()
     db.refresh(target)
+    return target
+
+
+def replace_resume_record(
+    db: Session,
+    career_profile_id: str,
+    resume_record_id: str,
+    new_file_id: str,
+    new_original_filename: str,
+    new_file_size: int,
+    new_candidate: CandidateProfile,
+    new_display_name: Optional[str] = None,
+    base_dir: Optional[Path] = None,
+) -> ResumeRecord:
+    """
+    Atomically replace an existing resume record and its parsed profile data with new file content.
+    If database persistence fails, rolls back and deletes the newly uploaded file to avoid orphans.
+    If database persistence succeeds, deletes the previous physical PDF file.
+    """
+    target = get_resume_record(db, career_profile_id, resume_record_id)
+    if not target:
+        raise ValueError(f"ResumeRecord '{resume_record_id}' not found for career profile '{career_profile_id}'.")
+
+    old_file_id = target.file_id
+    validated_new_id = validate_file_id(new_file_id)
+    new_file_path = str(get_file_path(validated_new_id, base_dir=base_dir))
+
+    try:
+        # Update record fields
+        target.file_id = validated_new_id
+        target.original_filename = new_original_filename
+        target.file_path = new_file_path
+        target.file_size = new_file_size
+        if new_display_name and new_display_name.strip():
+            target.display_name = new_display_name.strip()
+        target.upload_status = "completed"
+        target.extraction_status = "completed"
+        target.parsing_status = "completed"
+        target.last_parsed_at = datetime.now(timezone.utc)
+
+        # Replace parsed candidate profile child entities
+        persist_parsed_candidate_profile(db, target.id, new_candidate)
+
+    except Exception:
+        db.rollback()
+        # Clean up the new file since replacement failed
+        delete_file(validated_new_id, base_dir=base_dir)
+        raise
+
+    # Post-commit cleanup: database and new file are committed and valid.
+    # Safely remove the old PDF file; catch any OS-level errors so they do not
+    # invalidate the already committed and usable replacement resume.
+    if old_file_id != validated_new_id:
+        try:
+            delete_file(old_file_id, base_dir=base_dir)
+        except (OSError, PermissionError) as exc:
+            import logging
+            logging.getLogger(__name__).warning(
+                "Safe cleanup warning: could not delete old resume file '%s' after successful replacement: %s. "
+                "The replacement resume '%s' has been committed and remains active.",
+                old_file_id,
+                exc,
+                validated_new_id,
+            )
+
     return target
 
 
@@ -232,14 +321,17 @@ def persist_parsed_candidate_profile(
 ) -> ResumeProfile:
     """
     Persist a parsed CandidateProfile into independent relational resume entities.
-    Replaces any prior parsed profile for this specific resume record.
+    Replaces any prior parsed profile for this specific resume record idempotently.
     """
     record = db.get(ResumeRecord, resume_record_id)
+    if not record:
+        stmt = select(ResumeRecord).where(ResumeRecord.file_id == resume_record_id)
+        record = db.execute(stmt).scalar_one_or_none()
     if not record:
         raise ValueError(f"ResumeRecord '{resume_record_id}' does not exist.")
 
     # Remove prior parsed profile if present
-    stmt = select(ResumeProfile).where(ResumeProfile.resume_record_id == resume_record_id)
+    stmt = select(ResumeProfile).where(ResumeProfile.resume_record_id == record.id)
     existing_profile = db.execute(stmt).scalar_one_or_none()
     if existing_profile:
         db.delete(existing_profile)
@@ -254,7 +346,7 @@ def persist_parsed_candidate_profile(
     ]
 
     rp = ResumeProfile(
-        resume_record_id=resume_record_id,
+        resume_record_id=record.id,
         full_name=p_info.full_name,
         email=p_info.email,
         phone=p_info.phone,
@@ -353,8 +445,20 @@ def reconstitute_candidate_profile(
     Reconstitute the exact Pydantic CandidateProfile from the database
     with 100% data fidelity, preserving field types and response contracts.
     """
-    stmt = select(ResumeProfile).where(ResumeProfile.resume_record_id == resume_record_id)
+    # Try finding by record.id or file_id
+    stmt = select(ResumeProfile).where(
+        (ResumeProfile.resume_record_id == resume_record_id)
+        | (ResumeProfile.resume_record.has(ResumeRecord.file_id == resume_record_id))
+    )
     rp = db.execute(stmt).scalar_one_or_none()
+    if not rp:
+        # Fallback to direct resume_record query
+        rec = db.get(ResumeRecord, resume_record_id)
+        if not rec:
+            rec = db.execute(select(ResumeRecord).where(ResumeRecord.file_id == resume_record_id)).scalar_one_or_none()
+        if rec:
+            stmt = select(ResumeProfile).where(ResumeProfile.resume_record_id == rec.id)
+            rp = db.execute(stmt).scalar_one_or_none()
     if not rp:
         return None
 
@@ -450,4 +554,3 @@ def reconstitute_candidate_profile(
         certifications=certifications,
         achievements=achievements,
     )
-

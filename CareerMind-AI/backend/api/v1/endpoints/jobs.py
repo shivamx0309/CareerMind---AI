@@ -60,7 +60,7 @@ async def match_job(request: JobMatchRequest) -> JobMatchResponse:
             job_title=request.job_title,
             company=request.company,
             location=request.location,
-            upload_dir=UPLOAD_DIR,
+            upload_dir=resume_endpoint.UPLOAD_DIR,
         )
         return response
 

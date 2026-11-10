@@ -31,6 +31,34 @@ def get_local_career_profile(db: Session) -> Optional[CareerProfile]:
     return db.execute(stmt).scalar_one_or_none()
 
 
+def get_or_create_local_career_profile(db: Session) -> CareerProfile:
+    """
+    Retrieve the local career profile, or create a minimal un-onboarded profile
+    if none exists yet, ensuring resume uploads and records always have a valid owner.
+    """
+    profile = get_local_career_profile(db)
+    if not profile:
+        profile = CareerProfile(
+            user_id=LOCAL_USER_ID,
+            full_name="Local User",
+            career_status="Fresher",
+            highest_education="Bachelor's",
+            degree="General",
+            institution="University",
+            graduation_year=2026,
+            primary_target_role="Software Engineer",
+            preferred_job_type="Full-time",
+            preferred_work_mode="Remote",
+            preferred_locations=[],
+            career_objective=None,
+            onboarding_completed=False,
+        )
+        db.add(profile)
+        db.commit()
+        db.refresh(profile)
+    return profile
+
+
 def get_onboarding_status(db: Session) -> OnboardingStatusResponse:
     """Check whether the local user has completed onboarding."""
     profile = get_local_career_profile(db)

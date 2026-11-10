@@ -320,7 +320,7 @@ export default function ResumeAnalyzer() {
 
                     {status === 'parsed' && (
                         <div className="flex flex-wrap items-center gap-2.5">
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--success)]/30 bg-[var(--success)]/10 px-3 py-1 text-xs font-semibold text-[var(--success)]">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                                 <FileCheck2 size={14} />
                                 <span>Analysis Complete</span>
                             </span>
