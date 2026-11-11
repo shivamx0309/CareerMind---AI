@@ -20,6 +20,16 @@ DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_SQLITE_URL)
 
 is_sqlite = DATABASE_URL.startswith("sqlite")
 
+# Ensure the database parent directory exists before connecting (critical for /var/data on Render)
+if is_sqlite:
+    db_file_str = DATABASE_URL.replace("sqlite:///", "", 1)
+    if db_file_str and not db_file_str.startswith(":memory:"):
+        db_file_path = Path(db_file_str)
+        try:
+            db_file_path.parent.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
+
 engine_kwargs = {}
 if is_sqlite:
     engine_kwargs["connect_args"] = {"check_same_thread": False}

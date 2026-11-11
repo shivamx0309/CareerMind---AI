@@ -4,6 +4,7 @@ Encapsulates secure path derivation, traversal protection, file I/O, and safe cl
 """
 
 import logging
+import os
 from pathlib import Path
 import re
 from typing import List, Optional, Set
@@ -13,7 +14,20 @@ logger = logging.getLogger(__name__)
 # Backend and project roots
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BACKEND_DIR.parent
-UPLOAD_DIR = PROJECT_ROOT / "data" / "uploads"
+DEFAULT_UPLOAD_DIR = (PROJECT_ROOT / "data" / "uploads").resolve()
+
+# Support environment-driven upload directory (e.g. /var/data/uploads on Render persistent disk)
+_env_upload_dir = os.getenv("CAREERMIND_UPLOAD_DIR")
+if _env_upload_dir and _env_upload_dir.strip():
+    UPLOAD_DIR = Path(_env_upload_dir.strip()).resolve()
+else:
+    UPLOAD_DIR = DEFAULT_UPLOAD_DIR
+
+# Automatically ensure upload directory exists
+try:
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+except OSError as exc:
+    logger.warning("Could not create uploads directory '%s': %s", UPLOAD_DIR, exc)
 
 HEX_32_REGEX = re.compile(r"^[0-9a-f]{32}$", re.IGNORECASE)
 

@@ -38,12 +38,9 @@ from matching_engine.experience_matcher import match_candidate_experience
 from matching_engine.education_matcher import match_candidate_education
 from matching_engine.score_calculator import calculate_match_score, DEFAULT_WEIGHTS
 from matching_engine.recommendation_engine import generate_recommendations
+from services.storage_service import UPLOAD_DIR as DEFAULT_UPLOAD_DIR
 
 logger = logging.getLogger(__name__)
-
-# Default project root and upload directory
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_UPLOAD_DIR = PROJECT_ROOT / "data" / "uploads"
 
 
 def count_unique_candidate_skills(profile: CandidateProfile) -> int:

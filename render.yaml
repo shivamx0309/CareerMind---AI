@@ -1,0 +1,28 @@
+# ==============================================================================
+# CareerMind AI - Render Blueprint Deployment Specification
+# ==============================================================================
+# Deploys FastAPI backend service with persistent disk for SQLite and uploads.
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: careermind-ai-backend
+    runtime: python
+    rootDir: CareerMind-AI/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: false
+    disk:
+      name: careermind-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        value: sqlite:////var/data/careermind.db
+      - key: CAREERMIND_UPLOAD_DIR
+        value: /var/data/uploads
+      - key: FRONTEND_ORIGINS
+        value: http://localhost:5173,http://127.0.0.1:5173,https://YOUR-FRONTEND.vercel.app

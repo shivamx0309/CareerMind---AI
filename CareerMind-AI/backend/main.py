@@ -1,5 +1,7 @@
 
+import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from api.v1.endpoints.resume import router as resume_router
 from api.v1.endpoints.jobs import router as jobs_router
@@ -17,6 +19,36 @@ app = FastAPI(
         "and Resume Assessment Platform"
     ),
     version="0.1.0",
+)
+
+# ---------------------------------------------------------------------------
+# CORS Configuration: Support dynamic Vercel origin with localhost fallbacks
+# ---------------------------------------------------------------------------
+DEFAULT_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+frontend_origins_env = os.getenv("FRONTEND_ORIGINS")
+if frontend_origins_env:
+    extra_origins = [
+        origin.strip()
+        for origin in frontend_origins_env.split(",")
+        if origin.strip()
+    ]
+    # Deduplicate while preserving order
+    allowed_origins = list(dict.fromkeys(DEFAULT_ALLOWED_ORIGINS + extra_origins))
+else:
+    allowed_origins = DEFAULT_ALLOWED_ORIGINS
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 
