@@ -109,7 +109,7 @@ export default function RoadmapPreferencesModal({
                     initial={{ scale: 0.95, opacity: 0, y: 10 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.95, opacity: 0, y: 10 }}
-                    className="relative w-full max-w-md rounded-3xl border border-[var(--border)] bg-[var(--surface-card)] p-6 shadow-2xl overflow-hidden"
+                    className="relative w-full max-w-md rounded-3xl border border-purple-200/90 dark:border-purple-800/40 bg-white dark:bg-[#191333] p-6 shadow-2xl overflow-hidden"
                 >
                     {/* Header */}
                     <div className="flex items-start justify-between pb-4 border-b border-[var(--border)]">

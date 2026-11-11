@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Briefcase, Target, BarChart3, Bot, Sparkles } from 'lucide-react'
+import mindyMascot from '../../assets/mindy-mascot.png'
 
 const MOBILE_FEATURES = [
     {
@@ -112,14 +113,14 @@ export default function MobileHeroMascot() {
                     <motion.div
                         animate={{ y: [0, -5, 0] }}
                         transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-                        className="relative w-full max-w-[140px] sm:max-w-[165px] aspect-[4/5] flex items-center justify-center"
+                        className="relative w-full max-w-[140px] sm:max-w-[165px] flex items-center justify-center"
                     >
                         <img
-                            src="/assets/mindy/mindy-welcome.png"
+                            src={mindyMascot}
                             alt="Mindy AI Mascot"
                             loading="eager"
                             decoding="async"
-                            className="w-full h-full object-contain filter drop-shadow-[0_10px_20px_rgba(109,40,217,0.22)]"
+                            className="w-full h-auto max-h-[190px] object-contain filter drop-shadow-[0_10px_20px_rgba(109,40,217,0.22)]"
                         />
                     </motion.div>
                 </div>
