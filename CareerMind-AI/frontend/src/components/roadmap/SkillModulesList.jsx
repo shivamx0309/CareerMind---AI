@@ -14,6 +14,9 @@ import {
 import { getCategoryMeta } from '../../utils/skillCategoryConfig'
 import TopicCard from './TopicCard'
 import ConfirmModal from './ConfirmModal'
+import RoadmapPagination from './RoadmapPagination'
+
+const SKILLS_PER_PAGE = 3
 
 export default function SkillModulesList({
     skills = [],
@@ -27,6 +30,7 @@ export default function SkillModulesList({
     const [searchQuery, setSearchQuery] = useState('')
     const [collapsedSkills, setCollapsedSkills] = useState({})
     const [confirmModalSkill, setConfirmModalSkill] = useState(null)
+    const [rawPage, setRawPage] = useState(1)
 
     const toggleSkillCollapse = (skillId) => {
         setCollapsedSkills((prev) => ({
@@ -57,6 +61,30 @@ export default function SkillModulesList({
         })
     }, [skills, filterPriority, searchQuery])
 
+    const handleFilterChange = (key) => {
+        setFilterPriority(key)
+        setRawPage(1)
+    }
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value)
+        setRawPage(1)
+    }
+
+    const handleClearSearch = () => {
+        setSearchQuery('')
+        setRawPage(1)
+    }
+
+    const totalSkills = filteredSkills.length
+    const totalPages = Math.max(1, Math.ceil(totalSkills / SKILLS_PER_PAGE))
+    const currentPage = Math.min(totalPages, Math.max(1, rawPage))
+
+    const startIndex = (currentPage - 1) * SKILLS_PER_PAGE
+    const paginatedSkills = useMemo(() => {
+        return filteredSkills.slice(startIndex, startIndex + SKILLS_PER_PAGE)
+    }, [filteredSkills, startIndex])
+
     // Group counts
     const highCount = skills.filter((s) => s.priority === 'high').length
     const mediumCount = skills.filter((s) => s.priority === 'medium').length
@@ -72,7 +100,7 @@ export default function SkillModulesList({
     }
 
     return (
-        <div className="space-y-6">
+        <div id="skill-modules-section" className="space-y-6">
             {/* Header & Filter Controls */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -97,7 +125,7 @@ export default function SkillModulesList({
                         <button
                             key={tab.key}
                             type="button"
-                            onClick={() => setFilterPriority(tab.key)}
+                            onClick={() => handleFilterChange(tab.key)}
                             className={`rounded-lg px-3 py-1 text-xs font-semibold transition-all cursor-pointer ${
                                 filterPriority === tab.key
                                     ? 'bg-[var(--surface-card)] text-[var(--accent)] shadow-sm'
@@ -119,14 +147,14 @@ export default function SkillModulesList({
                 <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={handleSearchChange}
                     placeholder="Search skills, topics, or categories (e.g. Docker, PostgreSQL, APIs)..."
                     className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] py-2.5 pl-10 pr-4 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none transition-all"
                 />
                 {searchQuery && (
                     <button
                         type="button"
-                        onClick={() => setSearchQuery('')}
+                        onClick={handleClearSearch}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"
                     >
                         Clear
@@ -143,7 +171,7 @@ export default function SkillModulesList({
                 </div>
             ) : (
                 <div className="space-y-5">
-                    {filteredSkills.map((skill) => {
+                    {paginatedSkills.map((skill) => {
                         const catMeta = getCategoryMeta(skill.category)
                         const CatIcon = catMeta.icon
                         const isCollapsed = Boolean(collapsedSkills[skill.id])
@@ -359,6 +387,20 @@ export default function SkillModulesList({
                     })}
                 </div>
             )}
+
+            {/* Pagination for Skill Modules */}
+            <RoadmapPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalSkills}
+                itemsPerPage={SKILLS_PER_PAGE}
+                onPageChange={(page) => {
+                    setRawPage(page)
+                    const el = document.getElementById('skill-modules-section')
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
+                itemName="modules"
+            />
 
             {/* Confirmation Dialog for Skill Completion */}
             <ConfirmModal

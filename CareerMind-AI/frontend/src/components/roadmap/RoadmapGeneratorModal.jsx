@@ -120,19 +120,19 @@ export default function RoadmapGeneratorModal({
                     initial={{ scale: 0.95, opacity: 0, y: 10 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.95, opacity: 0, y: 10 }}
-                    className="relative w-full max-w-lg rounded-3xl border border-[var(--border)] bg-[var(--surface-card)] p-6 sm:p-7 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+                    className="relative w-full max-w-lg rounded-3xl border border-purple-200/90 dark:border-purple-800/40 bg-white dark:bg-[#191333] p-6 sm:p-7 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
                 >
                     {/* Header */}
-                    <div className="flex items-start justify-between pb-4 border-b border-[var(--border)]">
+                    <div className="flex items-start justify-between pb-4 border-b border-purple-100 dark:border-purple-800/40">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-white shadow-md shadow-purple-600/20">
+                            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#6D28D9] to-[#8B5CF6] text-white shadow-md shadow-purple-600/25">
                                 <Sparkles size={20} />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-[var(--text-primary)]">
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                                     Generate Learning Roadmap
                                 </h3>
-                                <p className="text-xs text-[var(--text-secondary)]">
+                                <p className="text-xs text-slate-500 dark:text-purple-300/80">
                                     Convert an assessed Skill Gap Report into an actionable learning curriculum
                                 </p>
                             </div>
@@ -140,7 +140,7 @@ export default function RoadmapGeneratorModal({
                         <button
                             type="button"
                             onClick={onClose}
-                            className="rounded-xl border border-[var(--border)] bg-[var(--surface-hover)] p-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+                            className="rounded-xl border border-slate-200 dark:border-purple-800/40 bg-slate-100 hover:bg-slate-200 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 p-2 text-slate-600 dark:text-purple-300 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
                         >
                             <X size={16} />
                         </button>
@@ -158,23 +158,23 @@ export default function RoadmapGeneratorModal({
                     <form onSubmit={handleSubmit} className="mt-5 space-y-5">
                         {/* 1. Skill Gap Report Selection */}
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
+                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-purple-300 mb-2">
                                 1. Select Skill Gap Report
                             </label>
 
                             {isLoadingReports ? (
-                                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-center text-xs text-[var(--text-secondary)]">
+                                <div className="rounded-xl border border-slate-200 dark:border-purple-800/30 bg-slate-50 dark:bg-purple-950/20 p-4 text-center text-xs text-slate-600 dark:text-purple-300">
                                     Loading your saved Skill Gap Reports...
                                 </div>
                             ) : reports.length === 0 ? (
-                                <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface-hover)] p-4 text-center">
-                                    <p className="text-xs text-[var(--text-secondary)]">
+                                <div className="rounded-xl border border-dashed border-slate-300 dark:border-purple-800/50 bg-slate-50/80 dark:bg-purple-950/20 p-4 text-center">
+                                    <p className="text-xs text-slate-600 dark:text-purple-300">
                                         No Skill Gap Reports found. You must analyze your resume against a target role before generating a roadmap.
                                     </p>
                                     <Link
                                         to="/skills"
                                         onClick={onClose}
-                                        className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-[var(--primary-purple)] px-3.5 py-1.5 text-xs font-bold text-white hover:opacity-90 shadow-md"
+                                        className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-purple-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-purple-500 shadow-md transition-all"
                                     >
                                         Run Skill Gap Analysis
                                         <ArrowRight size={13} />
@@ -190,34 +190,38 @@ export default function RoadmapGeneratorModal({
                                                 onClick={() => setSelectedReportId(rep.id)}
                                                 className={`flex items-center justify-between gap-3 rounded-xl border p-3 cursor-pointer transition-all ${
                                                     isSelected
-                                                        ? 'border-[var(--accent)] bg-[var(--accent-soft)] shadow-sm'
-                                                        : 'border-[var(--border)] bg-[var(--surface)] hover:border-[var(--border-hover)]'
+                                                        ? 'border-2 border-purple-600 bg-purple-50/90 dark:bg-purple-950/60 shadow-sm ring-1 ring-purple-500/20'
+                                                        : 'border-slate-200 dark:border-purple-800/30 bg-slate-50/60 hover:bg-slate-100/80 dark:bg-[#140F28]/60 dark:hover:bg-[#1E173D]/60 hover:border-purple-300 dark:hover:border-purple-700/50'
                                                 }`}
                                             >
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-2">
-                                                        <Briefcase size={14} className="text-[var(--accent)] shrink-0" />
-                                                        <span className="truncate text-xs font-bold text-[var(--text-primary)]">
+                                                        <Briefcase size={14} className={isSelected ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 dark:text-slate-400'} />
+                                                        <span className={`truncate text-xs font-bold ${isSelected ? 'text-purple-950 dark:text-white' : 'text-slate-800 dark:text-slate-200'}`}>
                                                             {rep.role_title}
                                                         </span>
-                                                        <span className="rounded-full bg-[var(--surface-hover)] px-2 py-0.2 text-[10px] font-mono text-[var(--text-secondary)]">
+                                                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold ${
+                                                            isSelected
+                                                                ? 'bg-purple-200/80 dark:bg-purple-900/70 text-purple-800 dark:text-purple-200'
+                                                                : 'bg-slate-200/70 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300'
+                                                        }`}>
                                                             Score: {Math.round(rep.overall_score || 0)}%
                                                         </span>
                                                     </div>
-                                                    <div className="mt-1 flex items-center gap-2 text-[10px] text-[var(--text-secondary)]">
+                                                    <div className={`mt-1 flex items-center gap-2 text-[10px] ${isSelected ? 'text-purple-700 dark:text-purple-300 font-medium' : 'text-slate-500 dark:text-slate-400'}`}>
                                                         <span>{new Date(rep.created_at).toLocaleDateString()}</span>
                                                         <span>•</span>
                                                         <span>{rep.missing_required_skills_count || 0} core gaps</span>
                                                     </div>
                                                 </div>
                                                 <div
-                                                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
+                                                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
                                                         isSelected
-                                                            ? 'border-[var(--accent)] bg-[var(--accent)] text-white'
-                                                            : 'border-[var(--border)]'
+                                                            ? 'bg-purple-600 text-white shadow-xs'
+                                                            : 'border border-slate-300 dark:border-purple-800/50'
                                                     }`}
                                                 >
-                                                    {isSelected && <Check size={12} />}
+                                                    {isSelected && <Check size={12} strokeWidth={3} />}
                                                 </div>
                                             </div>
                                         )
@@ -229,10 +233,10 @@ export default function RoadmapGeneratorModal({
                         {/* 2. Study Time Availability */}
                         <div>
                             <div className="flex items-center justify-between mb-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
+                                <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-purple-300">
                                     2. Weekly Study Availability
                                 </label>
-                                <span className="text-xs font-bold text-[var(--accent)]">
+                                <span className="text-xs font-bold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-950/70 px-2.5 py-0.5 rounded-full border border-purple-200 dark:border-purple-800/50">
                                     {weeklyHours} hrs / week
                                 </span>
                             </div>
@@ -247,14 +251,14 @@ export default function RoadmapGeneratorModal({
                                             onClick={() => handleSelectPresetHours(preset.hours)}
                                             className={`rounded-xl border p-2.5 text-center transition-all cursor-pointer ${
                                                 active
-                                                    ? 'border-[var(--accent)] bg-[var(--accent-soft)] shadow-sm'
-                                                    : 'border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-hover)]'
+                                                    ? 'border-2 border-purple-600 bg-purple-600 text-white shadow-md shadow-purple-600/30 scale-[1.02]'
+                                                    : 'border-slate-200 dark:border-purple-800/30 bg-slate-50/60 hover:bg-slate-100/90 dark:bg-[#140F28]/60 dark:hover:bg-[#1E173D]/60 hover:border-purple-300'
                                             }`}
                                         >
-                                            <div className="text-xs font-bold text-[var(--text-primary)]">
+                                            <div className={`text-xs font-bold ${active ? 'text-white' : 'text-slate-800 dark:text-slate-200'}`}>
                                                 {preset.label}
                                             </div>
-                                            <div className="mt-0.5 text-[10px] text-[var(--text-secondary)]">
+                                            <div className={`mt-0.5 text-[10px] ${active ? 'text-purple-100 font-medium' : 'text-slate-500 dark:text-slate-400'}`}>
                                                 {preset.desc}
                                             </div>
                                         </button>
@@ -272,8 +276,8 @@ export default function RoadmapGeneratorModal({
                                     }}
                                     className={`rounded-xl border px-3 py-1.5 text-xs font-semibold cursor-pointer transition-all ${
                                         isCustomHours
-                                            ? 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]'
-                                            : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]'
+                                            ? 'border-2 border-purple-600 bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-bold shadow-xs'
+                                            : 'border-slate-200 dark:border-purple-800/30 bg-slate-50/60 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-purple-900/20'
                                     }`}
                                 >
                                     Custom hours
@@ -286,9 +290,9 @@ export default function RoadmapGeneratorModal({
                                             max="60"
                                             value={customHoursInput}
                                             onChange={(e) => handleCustomHoursChange(e.target.value)}
-                                            className="w-16 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-2 py-1 text-xs text-center font-bold text-[var(--text-primary)] focus:border-[var(--accent)] focus:outline-none"
+                                            className="w-16 rounded-xl border border-slate-300 dark:border-purple-700 bg-white dark:bg-[#140F28] px-2 py-1 text-xs text-center font-bold text-slate-900 dark:text-white focus:border-purple-600 focus:outline-none"
                                         />
-                                        <span className="text-xs text-[var(--text-secondary)]">hrs / week</span>
+                                        <span className="text-xs text-slate-600 dark:text-purple-300 font-medium">hrs / week</span>
                                     </div>
                                 )}
                             </div>
@@ -296,7 +300,7 @@ export default function RoadmapGeneratorModal({
 
                         {/* 3. Optional Custom Title */}
                         <div>
-                            <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-purple-300 mb-1.5">
                                 3. Roadmap Title (Optional)
                             </label>
                             <input
@@ -304,24 +308,24 @@ export default function RoadmapGeneratorModal({
                                 value={roadmapTitle}
                                 onChange={(e) => setRoadmapTitle(e.target.value)}
                                 placeholder="e.g. Backend Engineer Mastery Sprint"
-                                className="w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-xs text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none"
+                                className="w-full rounded-xl border border-slate-200 dark:border-purple-800/40 bg-slate-50/60 dark:bg-[#140F28]/60 px-3.5 py-2.5 text-xs font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:bg-white dark:focus:bg-[#140F28] focus:border-purple-600 focus:ring-2 focus:ring-purple-500/20 focus:outline-none transition-all"
                             />
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center justify-end gap-3 pt-4 border-t border-[var(--border)]">
+                        <div className="flex items-center justify-end gap-3 pt-4 border-t border-purple-100 dark:border-purple-800/40">
                             <button
                                 type="button"
                                 onClick={onClose}
                                 disabled={isGenerating}
-                                className="rounded-xl border border-[var(--border)] bg-[var(--surface-hover)] px-4 py-2 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer"
+                                className="rounded-xl border border-slate-200 dark:border-purple-800/40 bg-slate-100 hover:bg-slate-200/80 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 px-4 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 dark:text-purple-200 dark:hover:text-white transition-all cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
                                 disabled={isGenerating || reports.length === 0}
-                                className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary-purple)] px-5 py-2 text-xs font-bold text-white shadow-md shadow-purple-600/20 hover:opacity-90 transition-all cursor-pointer disabled:opacity-50"
+                                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 px-6 py-2.5 text-xs font-bold text-white shadow-lg shadow-purple-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer disabled:opacity-50"
                             >
                                 {isGenerating ? (
                                     <>

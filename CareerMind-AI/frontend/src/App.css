@@ -754,10 +754,18 @@ body:has(.landing-page-container) {
   transition: all 0.25s ease;
 }
 
-.primary-button:hover {
+.primary-button:hover,
+.primary-button:active,
+.primary-button:focus {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px rgba(124, 92, 255, 0.55);
-  color: #ffffff;
+  color: #ffffff !important;
+}
+
+.primary-button *,
+.primary-button:hover * {
+  color: #ffffff !important;
+  stroke: #ffffff;
 }
 
 .primary-button.secondary-style {
@@ -773,16 +781,54 @@ body:has(.landing-page-container) {
   border-color: var(--accent);
 }
 
-/* Decorative Orb & Sparkle */
+/* Decorative Hero 3D Career Intelligence Illustration */
 .welcome-decoration {
   position: relative;
-  width: 220px;
-  height: 220px;
+  width: 340px;
+  max-width: 100%;
+  height: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
+  user-select: none;
+}
+
+.welcome-illustration-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(148, 116, 255, 0.22) 0%, rgba(139, 92, 246, 0.12) 45%, rgba(196, 181, 253, 0) 70%);
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+.welcome-orbit-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 270px;
+  height: 270px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(148, 116, 255, 0.25);
+  pointer-events: none;
+  animation: spin 45s linear infinite;
+}
+
+.welcome-illustration-img {
+  width: 100%;
+  height: 100%;
+  max-height: 240px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 14px 28px rgba(109, 40, 217, 0.18));
 }
 
 .orbit {
@@ -858,7 +904,7 @@ body:has(.landing-page-container) {
    -------------------------------------------------------------------------- */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
@@ -1598,8 +1644,8 @@ body:has(.landing-page-container) {
 
   .welcome-decoration {
     margin-left: 0;
-    width: 170px;
-    height: 170px;
+    width: 280px;
+    height: 200px;
   }
 
   .orbit-one {
@@ -1613,7 +1659,7 @@ body:has(.landing-page-container) {
   }
 
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
 
@@ -1663,4 +1709,288 @@ body:has(.landing-page-container) {
   .activity-status {
     align-self: flex-start;
   }
+}
+
+/* Default state for mobile next steps timeline (hidden on desktop/tablet) */
+.mobile-timeline-card {
+  display: none;
+}
+
+/* ==========================================================================
+   Mobile Dashboard Compact UI Optimization (< 450px)
+   ========================================================================== */
+@media (max-width: 450px) {
+  /* 1. Career Overview Cards (Compact 2-column grid) */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.65rem !important;
+  }
+
+  .stat-card {
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 0.75rem 0.65rem !important;
+    gap: 0.6rem !important;
+    min-height: 64px !important;
+    border-radius: 16px !important;
+  }
+
+  .stat-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .stat-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .stat-content {
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+
+  .stat-title {
+    font-size: 0.6875rem !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    color: var(--text-secondary) !important;
+    margin: 0 0 2px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .stat-card h3 {
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    color: var(--text-primary) !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .stat-desc {
+    display: none !important;
+  }
+
+  /* 2. Quick Actions Cards (Compact 2-column grid) */
+  .actions-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.65rem !important;
+  }
+
+  .action-card {
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0.75rem 0.65rem !important;
+    gap: 0.45rem !important;
+    min-height: 56px !important;
+    border-radius: 16px !important;
+    height: auto !important;
+  }
+
+  .action-icon {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 10px !important;
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .action-icon svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .action-body {
+    flex: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .action-card h3 {
+    font-size: 0.78125rem !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+    line-height: 1.25 !important;
+    color: var(--text-primary) !important;
+  }
+
+  .action-desc {
+    display: none !important;
+  }
+
+  .action-link {
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  .action-link-text {
+    display: none !important;
+  }
+
+  .action-link svg {
+    width: 14px !important;
+    height: 14px !important;
+    color: var(--accent) !important;
+  }
+
+  /* 3. Your Next Steps (Compact Horizontal Progress Timeline) */
+  .desktop-next-steps {
+    display: none !important;
+  }
+
+  .mobile-timeline-card {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 1.25rem 0.85rem !important;
+    border-radius: 18px !important;
+  }
+
+  .timeline-track {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: space-between !important;
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  .timeline-step {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    width: 78px !important;
+    z-index: 2 !important;
+  }
+
+  .timeline-bubble {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    transition: all 0.25s ease !important;
+  }
+
+  .timeline-bubble.completed,
+  .timeline-bubble.active {
+    background: #6D28D9 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(109, 40, 217, 0.35) !important;
+  }
+
+  .timeline-bubble.pending {
+    background: var(--surface-solid) !important;
+    color: var(--text-muted) !important;
+    border: 1.5px solid var(--border) !important;
+  }
+
+  .timeline-label {
+    font-size: 0.6875rem !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    margin-top: 0.5rem !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+  }
+
+  .timeline-line {
+    flex: 1 !important;
+    height: 0 !important;
+    border-top: 1.5px dashed var(--border) !important;
+    margin-top: 14px !important;
+    z-index: 1 !important;
+  }
+
+  .timeline-line.completed {
+    border-top-color: #6D28D9 !important;
+    border-top-style: solid !important;
+  }
+}
+
+/* ==========================================================================
+   UNIVERSAL PURPLE CTA WHITE FONT ENFORCEMENT (LIGHT & DARK THEMES)
+   Guarantees that any purple/violet/accent CTA background has crisp, high-contrast
+   white text and matching white icon strokes across all themes and interactions.
+   ========================================================================== */
+.primary-button:not(.secondary-style),
+.primary-button:not(.secondary-style):hover,
+.primary-button:not(.secondary-style):active,
+.primary-button:not(.secondary-style):focus,
+.purple-gradient-btn,
+.purple-gradient-btn:hover,
+.purple-gradient-btn:active,
+.purple-gradient-btn:focus,
+button[class*="bg-[var(--accent)"],
+button[class*="bg-[var(--primary-purple)"],
+button[class*="bg-purple-6"],
+button[class*="bg-purple-7"],
+button[class*="bg-purple-8"],
+button[class*="bg-violet-6"],
+button[class*="bg-violet-7"],
+button[class*="bg-violet-8"],
+a[class*="bg-[var(--accent)"],
+a[class*="bg-[var(--primary-purple)"],
+a[class*="bg-purple-6"],
+a[class*="bg-purple-7"],
+a[class*="bg-purple-8"],
+a[class*="bg-violet-6"],
+a[class*="bg-violet-7"],
+a[class*="bg-violet-8"],
+button[class*="from-[var(--accent)"],
+button[class*="from-purple-6"],
+button[class*="from-purple-7"],
+button[class*="from-violet-6"],
+button[class*="from-violet-7"],
+a[class*="from-[var(--accent)"],
+a[class*="from-purple-6"],
+a[class*="from-purple-7"],
+a[class*="from-violet-6"],
+a[class*="from-violet-7"],
+.nav-item.active,
+.nav-item.active:hover,
+.nav-item.active:focus {
+  color: #ffffff !important;
+}
+
+.primary-button:not(.secondary-style) *,
+.primary-button:not(.secondary-style):hover *,
+.purple-gradient-btn *,
+.purple-gradient-btn:hover *,
+button[class*="bg-[var(--accent)"] *,
+button[class*="bg-[var(--primary-purple)"] *,
+button[class*="bg-purple-6"] *,
+button[class*="bg-purple-7"] *,
+button[class*="bg-violet-6"] *,
+button[class*="bg-violet-7"] *,
+a[class*="bg-[var(--accent)"] *,
+a[class*="bg-[var(--primary-purple)"] *,
+a[class*="bg-purple-6"] *,
+a[class*="bg-purple-7"] *,
+a[class*="bg-violet-6"] *,
+a[class*="bg-violet-7"] *,
+button[class*="from-[var(--accent)"] *,
+button[class*="from-purple-6"] *,
+button[class*="from-purple-7"] *,
+button[class*="from-violet-6"] *,
+button[class*="from-violet-7"] *,
+a[class*="from-[var(--accent)"] *,
+a[class*="from-purple-6"] *,
+a[class*="from-purple-7"] *,
+a[class*="from-violet-6"] *,
+a[class*="from-violet-7"] *,
+.nav-item.active * {
+  color: #ffffff !important;
+  stroke: #ffffff;
 }

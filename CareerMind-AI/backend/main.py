@@ -7,6 +7,7 @@ from api.v1.endpoints.onboarding import router as onboarding_router
 from api.v1.endpoints.skills import router as skills_router
 from api.v1.endpoints.learning import router as learning_router
 from api.v1.endpoints.interviews import router as interviews_router
+from api.v1.endpoints.dashboard import router as dashboard_router
 
 
 app = FastAPI(
@@ -59,6 +60,13 @@ app.include_router(
     interviews_router,
     prefix="/api/v1",
     tags=["Mock Interview Simulator"],
+)
+
+# Register Dashboard Career Insights API
+app.include_router(
+    dashboard_router,
+    prefix="/api/v1",
+    tags=["Dashboard Insights"],
 )
 
 

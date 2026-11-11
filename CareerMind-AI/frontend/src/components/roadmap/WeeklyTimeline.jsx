@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import {
     Clock,
     CheckCircle2,
@@ -8,6 +8,9 @@ import {
     Sparkles,
 } from 'lucide-react'
 import ConfirmModal from './ConfirmModal'
+import RoadmapPagination from './RoadmapPagination'
+
+const WEEKS_PER_PAGE = 3
 
 export default function WeeklyTimeline({
     milestones = [],
@@ -18,6 +21,28 @@ export default function WeeklyTimeline({
 }) {
     const [collapsedWeeks, setCollapsedWeeks] = useState({})
     const [confirmMilestone, setConfirmMilestone] = useState(null)
+    const [userSelectedPage, setUserSelectedPage] = useState(null)
+
+    const totalWeeks = milestones.length
+    const totalPages = Math.max(1, Math.ceil(totalWeeks / WEEKS_PER_PAGE))
+
+    // Calculate initial page based on active week
+    const activeWeekPage = useMemo(() => {
+        if (!currentWeek || totalWeeks === 0) return 1
+        const weekIndex = milestones.findIndex((m) => m.week_number === currentWeek)
+        if (weekIndex >= 0) {
+            return Math.floor(weekIndex / WEEKS_PER_PAGE) + 1
+        }
+        return 1
+    }, [currentWeek, totalWeeks, milestones])
+
+    // Derive active page safely without setState in effect
+    const currentPage = Math.min(totalPages, Math.max(1, userSelectedPage || activeWeekPage))
+
+    const startIndex = (currentPage - 1) * WEEKS_PER_PAGE
+    const paginatedMilestones = useMemo(() => {
+        return milestones.slice(startIndex, startIndex + WEEKS_PER_PAGE)
+    }, [milestones, startIndex])
 
     const toggleWeek = (weekNum) => {
         setCollapsedWeeks((prev) => ({
@@ -42,7 +67,7 @@ export default function WeeklyTimeline({
     }, {})
 
     return (
-        <div className="space-y-6">
+        <div id="weekly-timeline-section" className="space-y-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h3 className="text-lg font-bold text-[var(--text-primary)]">
@@ -68,7 +93,7 @@ export default function WeeklyTimeline({
                 </div>
             ) : (
                 <div className="relative pl-6 sm:pl-8 space-y-5 before:absolute before:left-3 before:top-4 before:bottom-4 before:w-0.5 before:bg-[var(--border)]">
-                    {milestones.map((ms) => {
+                    {paginatedMilestones.map((ms) => {
                         const weekNum = ms.week_number
                         const schedule = scheduleByWeek[weekNum] || {}
                         const isCurrent = weekNum === currentWeek
@@ -223,6 +248,20 @@ export default function WeeklyTimeline({
                     })}
                 </div>
             )}
+
+            {/* Pagination for Weekly Timeline */}
+            <RoadmapPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalWeeks}
+                itemsPerPage={WEEKS_PER_PAGE}
+                onPageChange={(page) => {
+                    setUserSelectedPage(page)
+                    const el = document.getElementById('weekly-timeline-section')
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }}
+                itemName="weeks"
+            />
 
             {/* Confirmation Dialog for Milestone Completion */}
             <ConfirmModal
