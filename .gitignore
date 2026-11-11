@@ -1,0 +1,34 @@
+# ==============================================================================
+# CareerMind AI - Root .gitignore
+# ==============================================================================
+
+# Environments and Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+secrets.json
+
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Databases & SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads & User Files
+CareerMind-AI/data/uploads/*
+!CareerMind-AI/data/uploads/.gitkeep
+
+# Node.js & Frontend builds
+node_modules/
+dist/
+build/
+.eslintcache
