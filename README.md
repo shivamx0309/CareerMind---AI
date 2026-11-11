@@ -33,13 +33,15 @@
     - [Environment Variables](#environment-variables)
     - [Part 1: Render Backend Deployment](#part-1-render-backend-deployment)
     - [Part 2: Vercel Frontend Deployment](#part-2-vercel-frontend-deployment)
-    - [Initial Data & PDF Migration](#initial-data--pdf-migration-preserving-local-data)
+    - [Initial Data & PDF Migration (Preserving Local Data)](#initial-data--pdf-migration-preserving-local-data)
     - [Production Health Checks](#production-health-checks)
 11. [Local Development Setup](#-local-development-setup)
 12. [Testing & Quality Assurance](#-testing--quality-assurance)
 13. [Current Limitations & Known Hosting Behavior](#-current-limitations--known-hosting-behavior)
 14. [Future Enhancements](#-future-enhancements)
-15. [License](#-license)
+15. [Development Philosophy](#-development-philosophy)
+16. [License](#-license)
+17. [Support](#-support)
 
 ---
 
@@ -49,8 +51,8 @@
 
 - **Project Type:** Full-Stack Web Application
 - **Architecture:** React 19 Frontend (SPA) + FastAPI Backend + Persistent SQLite Database
-- **Development Approach:** Modular, service-oriented architecture with full separation of concerns
-- **Intelligence Methodology:** Rule-based NLP, taxonomy-based skill clustering, TF-IDF lexical relevance, topological roadmap scheduling, and rubric-based interview evaluation.
+- **Development Approach:** Modular, service-oriented architecture with strict separation of concerns
+- **Intelligence Methodology:** Rule-based NLP, taxonomy-based skill clustering, TF-IDF lexical relevance, topological DAG roadmap scheduling, and rubric-based interview evaluation.
 
 ---
 
@@ -58,7 +60,7 @@
 
 Job seekers face critical hurdles during career preparation:
 - **Blind Submissions:** They cannot objectively measure how well their resume aligns with complex job descriptions.
-- **Ambiguous Gaps:** They struggle to pinpoint missing core requirements vs. preferred qualifications for their dream roles.
+- **Ambiguous Gaps:** They struggle to pinpoint missing core requirements vs. preferred qualifications for their target roles.
 - **Lack of Structure:** They lack actionable, prioritized learning paths tailored to their available weekly study time.
 - **Interview Anxiety:** They have few opportunities to practice domain-specific and behavioral questions with immediate, explainable feedback.
 
@@ -76,12 +78,14 @@ All five core features are fully implemented, persistent, and verified with auto
 Upload a PDF resume to automatically extract structured candidate data without relying on external cloud LLM APIs.
 
 **Core Capabilities:**
-- Secure PDF resume upload and physical validation (file headers, size constraints, MIME type).
+- PDF resume upload and validation (file headers, size constraints, MIME type).
 - Deterministic text extraction using PyMuPDF (`fitz`).
-- Section segmentation identifying Contact, Summary, Skills, Education, Experience, Projects, and Certifications.
-- Multi-category technical skill extraction across 10 technical domains.
-- Structured profile generation matching Pydantic validation schemas.
-- Persistent resume library supporting multiple uploaded resumes, default resume selection, replacement, and safe deletion.
+- Automated section identification (Contact, Summary, Skills, Education, Experience, Projects, Certifications).
+- Technical skill extraction across 10 technical domains.
+- Structured candidate profile generation matching Pydantic validation schemas.
+- Persistent resume library supporting multiple uploaded resumes.
+- Default resume selection for automated cross-feature analysis.
+- Resume replacement and safe file deletion.
 
 **Technologies:** Python, FastAPI, PyMuPDF, Regex, Pydantic v2, SQLAlchemy.
 
@@ -96,8 +100,10 @@ Compare candidate profile evidence directly against target job descriptions to i
 - Dynamic parsing of job descriptions into required skills, preferred skills, experience tenure, and education credentials.
 - Exact and canonical alias matching across technical skill taxonomies.
 - Related skill matching crediting semantically clustered competencies.
+- Missing skill identification with categorized gap tags.
+- Experience requirement and education requirement comparison.
 - Deterministic lexical relevance calculation using TF-IDF and Cosine Similarity.
-- Actionable, prioritized recommendations for addressing requirements.
+- Actionable, prioritized recommendations for addressing missing requirements.
 
 **Deterministic Scoring Formula:**
 
@@ -130,6 +136,16 @@ Evaluates candidate skills against curated industry benchmarks for 8 popular tec
 - Machine Learning Engineer
 - Python Developer
 
+**Core Capabilities:**
+- Role-based skill benchmarks with required vs. preferred importance.
+- Exact and alias skill matching.
+- Related skill classification within domain clusters.
+- Missing skill identification.
+- Required and preferred skill coverage percentages.
+- Category-wise skill analysis.
+- Weighted skill gap scoring.
+- Persistent analysis reports and report history.
+
 **Confidence Matching Framework:**
 
 | Match Type | Confidence Score | Weight Applied |
@@ -151,14 +167,19 @@ Evaluates candidate skills against curated industry benchmarks for 8 popular tec
 Converts assessed skill gaps into actionable, week-by-week learning curriculums with progress tracking.
 
 **Core Capabilities:**
-- Automatic generation derived directly from saved Skill Gap Analysis reports.
+- Roadmap generation derived directly from saved Skill Gap Analysis reports.
 - Graph-based dependency resolution using Kahn's algorithm (Directed Acyclic Graphs) for prerequisite ordering.
 - Priority classification: `HIGH` (missing required), `MEDIUM` (missing preferred), and `LOW` (related reinforcement).
-- Configurable study commitment: Casual (5h/wk), Recommended (10h/wk), Accelerated (15h/wk), or Intensive (20h/wk).
-- Multi-week timeline with topic-level checklists, curated free documentation resources, and milestone completion tracking.
+- Configurable study commitment:
+  - **Casual**: 5 hours / week
+  - **Recommended**: 10 hours / week
+  - **Accelerated**: 15 hours / week
+  - **Intensive**: 20 hours / week
+- Multi-week timeline with topic-level checklists, estimated completion hours, and curated free documentation resources.
+- Milestone completion tracking and remaining study hours calculations.
 - Client-side pagination for timelines and skill modules for seamless mobile navigation.
 
-**Technologies:** Python, FastAPI, NetworkX concepts, SQLAlchemy, SQLite, React 19, Lucide Icons.
+**Technologies:** Python, FastAPI, Directed Dependency Graphs, Topological Sorting, SQLAlchemy, SQLite, React 19, Recharts, Lucide Icons.
 
 ---
 
@@ -173,19 +194,30 @@ Conducts realistic technical, behavioral, and project-based interview practice s
 - **Project-Based**: Architecture, decision tradeoffs, and debugging questions.
 - **Mixed**: Comprehensive multi-category interview simulations.
 
+**Difficulty Levels:**
+- Beginner
+- Intermediate
+- Advanced
+
 **Question Pool & Categorization:**
-Curated across 15 technical and non-technical domains including Programming Fundamentals, Python, JavaScript, React, Node.js, SQL & DBMS, DSA, Operating Systems, Computer Networks, Machine Learning, Deep Learning, Data Analytics, System Design, Projects, and HR/Behavioral.
+Curated across 15 technical and non-technical domains: Programming Fundamentals, Python, JavaScript, React, Node.js, SQL & DBMS, Data Structures and Algorithms, Operating Systems, Computer Networks, Machine Learning, Deep Learning, Data Analytics, System Design, Projects and Practical Experience, and HR/Behavioral.
 
 **Deterministic Answer Evaluation Formula:**
 \[
 \text{Overall Score} = (0.40 \times \text{Concept Coverage}) + (0.25 \times \text{Relevance}) + (0.20 \times \text{Completeness}) + (0.15 \times \text{Structure})
 \]
 
+Behavioral questions additionally evaluate STAR framework alignment (Situation, Task, Action, Result).
+
+*Note: The evaluator is deterministic and rubric-based, using lexical and concept matching for explainable, ungrounded-claim-free feedback.*
+
 **Technologies:** Python, FastAPI, Pydantic, SQLAlchemy, SQLite, React 19, Recharts.
 
 ---
 
 ## 🔄 Application Workflow
+
+CareerMind AI connects all five features through shared candidate data and persisted reports:
 
 ```mermaid
 flowchart TD
@@ -207,6 +239,16 @@ flowchart TD
     J --> L["Weekly Progress & Milestone Tracking"]
     K --> M["Answer Evaluation & STAR Performance Report"]
 ```
+
+### Feature Integration Matrix
+
+| Feature | Primary Inputs | Output Artifacts |
+| :--- | :--- | :--- |
+| **Resume Intelligence** | Uploaded PDF resume | Structured candidate profile, persistent resume record |
+| **Job Description Matching**| Saved resume profile + Target job description | Compatibility score, component breakdown, recommendations |
+| **Skill Gap Analysis** | Parsed candidate skills + Curated role benchmark | Skill gap report, category breakdown, coverage metrics |
+| **Learning Roadmap** | Saved Skill Gap Analysis report + Weekly study hours | Week-by-week curriculum, milestones, topic progress |
+| **Mock Interview** | Role preference + Optional resume/gap report | Instant rubric scores, concept coverage, STAR feedback |
 
 ---
 
@@ -234,26 +276,46 @@ flowchart TB
     SVC --> FS
 ```
 
+### Architectural Principles
+- **Separation of Concerns:** Business logic is isolated into standalone services decoupled from route controllers.
+- **Centralized Session Management:** Scoped SQLAlchemy session provider with guaranteed closure and SQLite WAL mode.
+- **Storage Abstraction:** Safe server-side file resolution with containment checks preventing path traversal.
+- **Deterministic AI:** Transparent, defensible evaluation engines with explainable scoring formulas.
+- **Continuous Backward Compatibility:** All new endpoints maintain full contract stability with existing schemas.
+
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology | Version | Purpose |
-| :--- | :--- | :--- | :--- |
-| **Frontend Framework** | React | 19.3.1 | Core user interface and declarative component hierarchy |
-| **Build Tooling** | Vite | 8.3.6 | Fast HMR dev server and optimized production bundler |
-| **Styling** | Tailwind CSS | 4.3.4 | Utility-first responsive CSS styling with dark/light themes |
-| **Routing** | React Router | 7.18.5 | Client-side SPA routing with protected layout guards |
-| **HTTP Client** | Axios | 1.21.0 | Asynchronous API communication with response interceptors |
-| **Data Visualization**| Recharts | 3.10.1 | Visual match breakdowns, category bars, and radars |
-| **Icons & Motion** | Lucide React / Framer | 1.70 / 14.10 | Modern icon set and smooth component transitions |
-| **Backend Framework** | FastAPI | 0.162.0 | High-performance ASGI Python web framework |
-| **ASGI Server** | Uvicorn | 0.54.0 | Lightning-fast asynchronous server implementation |
-| **Document Parsing** | PyMuPDF (`fitz`) | 2.1 | Fast PDF text and font extraction |
-| **Data Validation** | Pydantic v2 | 2.14.3 | Strict request/response schema modeling and parsing |
-| **ORM** | SQLAlchemy | 2.1.8 | Type-safe database persistence with SQLite WAL support |
-| **Migrations** | Alembic | 1.20.1 | Declarative schema revision control |
-| **Testing** | pytest | 9.2.0 | Comprehensive unit and integration test runner |
+### Frontend
+| Technology | Purpose |
+| :--- | :--- |
+| **React 19** | Modern UI component hierarchy |
+| **Vite 8** | Development server and production bundling |
+| **Tailwind CSS v4** | Responsive styling with dark/light themes |
+| **React Router 7** | Client-side routing with route guards |
+| **Axios** | REST API communication with interceptors |
+| **Framer Motion** | Accessible UI micro-animations |
+| **Lucide React** | Consistent, modern icon library |
+| **Recharts** | Interactive charts and visual score breakdowns |
+
+### Backend
+| Technology | Purpose |
+| :--- | :--- |
+| **Python 3.11+ / 3.14** | Core backend programming language |
+| **FastAPI** | High-performance ASGI REST API framework |
+| **Uvicorn** | Production-ready ASGI server implementation |
+| **Pydantic v2** | Request validation, serialization, and typing |
+| **PyMuPDF (`fitz`)** | Fast PDF text and font extraction |
+| **SQLAlchemy 2.0** | ORM and database operations |
+| **Alembic** | Version-controlled schema migrations |
+| **Scikit-learn** | TF-IDF vectorization and cosine similarity |
+| **pytest / HTTPX** | Automated unit and integration test runner |
+
+### Storage & Tools
+- **SQLite:** Lightweight, local-first relational database with `PRAGMA foreign_keys=ON`.
+- **Persistent Disk Storage:** Encapsulated file I/O for uploaded PDF resumes.
+- **Development Tools:** Git, GitHub, VS Code, ESLint, Playwright.
 
 ---
 
@@ -262,7 +324,7 @@ flowchart TB
 The database is built on SQLite with `PRAGMA foreign_keys=ON` and centralized session lifecycle management.
 
 **Database File:**
-- Local: `CareerMind-AI/backend/careermind.db`
+- Local Development: `CareerMind-AI/backend/careermind.db`
 - Production (Render): `/var/data/careermind.db`
 
 ### Core Entity Schema
@@ -272,7 +334,7 @@ The database is built on SQLite with `PRAGMA foreign_keys=ON` and centralized se
 - **Interview Simulator**: `InterviewSession`, `InterviewSessionQuestion`, `InterviewAnswer`, `InterviewEvaluation`, `InterviewReport`.
 
 ### Alembic Migration State
-All schema revisions are versioned in `backend/alembic/versions`:
+All schema revisions are versioned in `CareerMind-AI/backend/alembic/versions`:
 1. `a15558c0f59e`: Career profile, onboarding, and resume library tables.
 2. `633bb4235e1e`: Default resume index optimizations.
 3. `fbd615962846`: Skill gap reports table and indexes.
@@ -357,7 +419,7 @@ CareerAI/
 
 ## ☁️ Production Deployment Architecture
 
-CareerMind AI is designed for zero-downtime, decoupled deployment:
+CareerMind AI is designed for decoupled, zero-downtime production deployment:
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
@@ -440,8 +502,8 @@ CareerMind AI is designed for zero-downtime, decoupled deployment:
 3. **Environment Variables**:
    - Add `VITE_API_BASE_URL`: `https://<YOUR-RENDER-BACKEND>.onrender.com/api/v1`
 4. **Deploy**:
-   - Click **Deploy**. Vercel will read [`vercel.json`](file:///C:/Users/ASUS/Videos/CareerAI/CareerMind-AI/frontend/vercel.json) to handle SPA routing.
-   - Once assigned a live domain (e.g., `https://careermind-ai.vercel.app`), add that domain into the `FRONTEND_ORIGINS` variable on Render.
+   - Click **Deploy**. Vercel reads [`vercel.json`](file:///C:/Users/ASUS/Videos/CareerAI/CareerMind-AI/frontend/vercel.json) to handle SPA routing.
+   - Once assigned a live domain (e.g., `https://careermind-ai.vercel.app`), update the `FRONTEND_ORIGINS` variable on Render.
 
 ---
 
@@ -470,7 +532,7 @@ Because Render persistent disks start empty, choose one of two options:
 
 ### Production Health Checks
 
-Verify your deployment status without initiating database queries:
+Verify deployment health without initiating database queries:
 
 ```bash
 # 1. Root Ping
@@ -487,7 +549,7 @@ curl -i https://YOUR-BACKEND.onrender.com/health
 ## 🛠️ Local Development Setup
 
 ### 1. Prerequisites
-- Python 3.11+ (verified up to Python 3.14)
+- Python 3.11+ (verified through Python 3.14)
 - Node.js 18+ and npm
 - Git
 
@@ -546,13 +608,22 @@ npm run build
 ```
 Build output produces an optimized, code-split `dist/` bundle in < 2 seconds with 0 warnings or errors.
 
+### Browser Testing
+Playwright is used for end-to-end responsive verification:
+- Desktop: 1440px
+- Tablet: 768px
+- Mobile: 425px
+- Mobile: 375px
+
 ---
 
 ## ⚠️ Current Limitations & Known Hosting Behavior
 
 1. **Local-First AI Engine**: The core extraction and evaluations use deterministic rule-based NLP, regex, taxonomy matching, and TF-IDF rather than external cloud LLMs. This delivers 100% privacy, explainability, zero API costs, and low latency.
-2. **Render Free Tier Spin-Down**: Free-tier Render Web Services spin down after 15 minutes of inactivity. Initial cold-start requests may experience a 30–50 second delay while the container boots.
-3. **SQLite Single-Writer Model**: SQLite with WAL mode is exceptionally fast for single-instance web services, but does not support multi-container horizontal autoscaling.
+2. **Text-Based Interviews**: Mock interviews are text-based; voice and video simulations are not currently implemented.
+3. **Saved Gap Report Requirement**: Roadmap generation requires a previously generated Skill Gap Analysis report.
+4. **Render Free Tier Spin-Down**: Free-tier Render Web Services spin down after 15 minutes of inactivity. Initial cold-start requests may experience a 30–50 second delay while the container boots.
+5. **SQLite Single-Writer Model**: SQLite with WAL mode is exceptionally fast for single-instance web services, but does not support multi-container horizontal autoscaling.
 
 ---
 
@@ -567,10 +638,27 @@ Build output produces an optimized, code-split `dist/` bundle in < 2 seconds wit
 
 ---
 
+## 👨‍💻 Development Philosophy
+
+CareerMind AI is built around:
+- **Modular Architecture:** Self-contained services that can evolve independently.
+- **Explainable Algorithms:** Scoring decisions that can be traced to clear, deterministic factors.
+- **Privacy by Design:** Local-first processing with zero telemetry or unapproved third-party API leaks.
+- **Persistent Data:** Continuous retention of candidate resumes, gap analyses, and roadmap progress.
+- **Automated Verification:** Comprehensive test coverage ensuring zero regressions across releases.
+
+---
+
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
 All candidate datasets and resume fixtures adhere to privacy anonymization standards.
+
+---
+
+## ⭐ Support
+
+If you find CareerMind AI interesting or helpful, consider giving the repository a star on GitHub.
 
 ---
 
